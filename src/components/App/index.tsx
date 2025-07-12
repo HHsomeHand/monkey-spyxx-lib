@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, {useEffect, useRef} from 'react';
 import {memo} from "react";
-import {useDraggable} from "@/utils/useDraggable.ts";
+import {makeDraggable} from "@/utils/makeDraggable.ts";
 
 interface AppProps {
     className?: string,
@@ -14,11 +14,8 @@ export const App = memo((
 
     useEffect(() => {
         if (divRef.current) {
-            useDraggable(divRef.current);
-
-            divRef.current.addEventListener('mousedown', () => {
-               console.log("mousedown")
-            });
+            const {cancel} = makeDraggable(divRef.current);
+            return cancel;
         }
     }, [divRef.current]);
 

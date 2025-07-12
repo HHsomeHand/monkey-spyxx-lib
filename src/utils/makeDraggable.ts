@@ -1,3 +1,5 @@
+import makeEventListener from "@/utils/makeEventListener.ts";
+
 /**
  * 如果子元素不想被拖动
  *
@@ -11,7 +13,7 @@
  *
  * @param Ele 目标元素
  */
-export function useDraggable(Ele: HTMLElement)
+export function makeDraggable(Ele: HTMLElement)
 {
     let scale = 1;
     let originX = 0;
@@ -21,25 +23,30 @@ export function useDraggable(Ele: HTMLElement)
 
     Ele.style.cursor = 'grab';
 
-    Ele.addEventListener('mousedown', (event) => {
+    type cancelCallbackArrType = ReturnType<typeof makeEventListener>[];
+    let cancelCallbackArr: cancelCallbackArrType = []
+
+    const cancelMouseDown = makeEventListener('mousedown', (event) => {
         event.stopPropagation();
         event.preventDefault();
         isDragging = true;
         startX = event.clientX;
         startY = event.clientY;
         Ele.style.cursor = 'grabbing';
-    });
+    }, Ele);
+    cancelCallbackArr.push(cancelMouseDown);
 
     Ele.onclick = event => event.stopPropagation();
 
-    window.addEventListener('mouseup', (event) => {
+    const cancelMouseUp = makeEventListener('mouseup', (event) => {
         event.stopPropagation();
         event.preventDefault();
         isDragging = false;
         Ele.style.cursor = 'grab';
     });
+    cancelCallbackArr.push(cancelMouseUp);
 
-    window.addEventListener('mousemove', (event) => {
+    const cancelMouseMove = makeEventListener('mousemove', (event) => {
         event.stopPropagation();
         event.preventDefault();
         if (!isDragging) return;
@@ -55,13 +62,23 @@ export function useDraggable(Ele: HTMLElement)
 
         Ele.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
     });
+    cancelCallbackArr.push(cancelMouseMove);
+
+
+    function reset() {
+        scale = 1;
+        originX = 0;
+        originY = 0;
+        Ele.style.transform = `translate(0, 0) scale(${scale})`;
+    }
 
     return {
-        reset() {
-            scale = 1;
-            originX = 0;
-            originY = 0;
-            Ele.style.transform = `translate(0, 0) scale(${scale})`;
-        }
+        reset,
+        cancel() {
+            for (const cancelFn of cancelCallbackArr) {
+                reset();
+                cancelFn();
+            }
+        }, // cancel() {
     }
 }
