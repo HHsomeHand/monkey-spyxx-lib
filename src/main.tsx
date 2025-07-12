@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from "@/components/App";
 import {cornDebugModeHint} from "@/assets/ascii-art/debug-mode-hint.ts";
 import {ISpyXX} from "@/types";
+import "@/assets/css/global.css";
 
 const spyXX: ISpyXX = {
     async getSelector() {
@@ -23,7 +24,7 @@ ReactDOM.createRoot(
   })(),
 ).render(
   <React.StrictMode>
-    <App />
+    <App/>
   </React.StrictMode>,
 );
 
