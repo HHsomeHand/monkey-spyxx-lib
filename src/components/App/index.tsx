@@ -27,7 +27,7 @@ export const App = memo((
                 event.stopPropagation();
             })
         }
-    }, []);
+    }, [innerRef.current]);
 
 
     return (
