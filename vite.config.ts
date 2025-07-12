@@ -11,6 +11,7 @@ let userscript: MonkeyUserScript = {
   namespace: 'npm/vite-plugin-monkey',
   author: 'QQ2402398917',
   version: '0.0.1',
+  license: "MIT",
 }
 
 if (process.env.NODE_ENV === 'development') {
@@ -42,6 +43,7 @@ export default defineConfig({
     monkey({
       entry: 'src/main.tsx',
       userscript,
+      server: { mountGmApi: true }, // 将 GM 函数注入为全局变量
       build: {
         externalGlobals: {
           react: cdn.jsdelivr('React', 'umd/react.production.min.js'),

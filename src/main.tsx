@@ -23,9 +23,7 @@ ReactDOM.createRoot(
     return app;
   })(),
 ).render(
-  <React.StrictMode>
     <App/>
-  </React.StrictMode>,
 );
 
 if (import.meta.env.MODE === 'development') {
