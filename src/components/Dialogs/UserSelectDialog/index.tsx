@@ -3,6 +3,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {memo} from "react";
 import {Modal} from "antd";
 import {makeDraggable} from "@/utils/makeDraggable.ts";
+import makeEventListener from "@/utils/makeEventListener.ts";
+import {Simulate} from "react-dom/test-utils";
+import cancel = Simulate.cancel;
+import CancelFnArr from "@/class/CancelFnArr.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -45,15 +49,49 @@ export const UserSelectDialog = memo((
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const cancelFnArr = new CancelFnArr();
+
         if (!containerRef.current) return;
 
-        let dialogEl = containerRef.current.querySelector('.ant-modal-content');
+        let dialogEl: Element;
 
-        if (!dialogEl) return;
+        {
+            let _dialogEl = containerRef.current.querySelector('.ant-modal-content');
 
-        const {cancel} = makeDraggable(dialogEl as HTMLElement);
+            if (!_dialogEl) return;
 
-        return cancel;
+            dialogEl = _dialogEl;
+        }
+
+        {
+            const {cancel} = makeDraggable(dialogEl as HTMLElement);
+
+            cancelFnArr.push(cancel);
+        }
+
+        function makeElStopPropagation(selector: string) {
+            let contentEl = dialogEl.querySelector(selector);
+
+            if (!contentEl) return;
+
+            {
+                const cancel = makeEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                }, contentEl);
+
+                cancelFnArr.push(cancel);
+            }
+        }
+
+        [
+            ".ant-modal-header",
+            ".ant-modal-body",
+            ".ant-modal-footer",
+        ].forEach((selector) => {
+            makeElStopPropagation(selector);
+        });
+
+        return cancelFnArr.getDoCancelFn();
     }, []);
 
     return (
