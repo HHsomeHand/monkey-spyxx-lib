@@ -7,6 +7,14 @@ import makeEventListener from "@/utils/makeEventListener.ts";
 import {Simulate} from "react-dom/test-utils";
 import cancel = Simulate.cancel;
 import CancelFnArr from "@/class/CancelFnArr.ts";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface UserSelectDialogProps {
     className?: string,
@@ -25,97 +33,68 @@ export const UserSelectDialog = memo((
 
     const [isModalOpen, setIsModalOpen] = useState(true);
 
-    function onResult(result: string) {
-        props.onResult(result);
-    }
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-
-        onResult("");
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-
-        onResult("");
-    };
-
-    const classNames = {
-        mask: `!bg-transparent`,
-        // content: `!px-4 !py-2`
-    };
-
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const cancelFnArr = new CancelFnArr();
-
-        if (!containerRef.current) return;
-
-        let dialogEl: Element;
-
-        {
-            let _dialogEl = containerRef.current.querySelector('.ant-modal-content');
-
-            if (!_dialogEl) return;
-
-            dialogEl = _dialogEl;
-        }
-
-        {
-            const {cancel} = makeDraggable(dialogEl as HTMLElement);
-
-            cancelFnArr.push(cancel);
-        }
-
-        function makeElStopPropagation(selector: string) {
-            let contentEl = dialogEl.querySelector(selector);
-
-            if (!contentEl) return;
-
-            {
-                const cancel = makeEventListener('mousedown', (e) => {
-                    e.stopPropagation();
-                }, contentEl);
-
-                cancelFnArr.push(cancel);
-            }
-        }
-
-        [
-            ".ant-modal-header",
-            ".ant-modal-body",
-            ".ant-modal-footer",
-        ].forEach((selector) => {
-            makeElStopPropagation(selector);
-        });
-
-        return cancelFnArr.getDoCancelFn();
-    }, []);
+    // useEffect(() => {
+    //     const cancelFnArr = new CancelFnArr();
+    //
+    //     if (!containerRef.current) return;
+    //
+    //     let dialogEl: Element;
+    //
+    //     {
+    //         let _dialogEl = containerRef.current.querySelector('.ant-modal-content');
+    //
+    //         if (!_dialogEl) return;
+    //
+    //         dialogEl = _dialogEl;
+    //     }
+    //
+    //     {
+    //         const {cancel} = makeDraggable(dialogEl as HTMLElement);
+    //
+    //         cancelFnArr.push(cancel);
+    //     }
+    //
+    //     function makeElStopPropagation(selector: string) {
+    //         let contentEl = dialogEl.querySelector(selector);
+    //
+    //         if (!contentEl) return;
+    //
+    //         {
+    //             const cancel = makeEventListener('mousedown', (e) => {
+    //                 e.stopPropagation();
+    //             }, contentEl);
+    //
+    //             cancelFnArr.push(cancel);
+    //         }
+    //     }
+    //
+    //     [
+    //         ".ant-modal-header",
+    //         ".ant-modal-body",
+    //         ".ant-modal-footer",
+    //     ].forEach((selector) => {
+    //         makeElStopPropagation(selector);
+    //     });
+    //
+    //     return cancelFnArr.getDoCancelFn();
+    // }, []);
 
     return (
         <div ref={containerRef}>
-            <Modal
-                title={propTitle}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent>
+                    <DialogHeader >
+                        <DialogTitle>{propTitle}</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete your account
+                            and remove your data from our servers.
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
 
-                classNames={classNames}
-                closable={false} // 是否有关闭按钮
-                keyboard={false} // esc 是否退出
-                maskClosable={false} // 点击 mask 是否会关闭对话框
-
-                getContainer={false} // 挂载在当前节点
-
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-
-                width={propWidth}
-            >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal>
         </div>
     );
 });
