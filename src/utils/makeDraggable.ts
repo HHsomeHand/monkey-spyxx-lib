@@ -13,40 +13,43 @@ import makeEventListener from "@/utils/makeEventListener.ts";
  *
  * @param Ele 目标元素
  */
-export function makeDraggable(Ele: HTMLElement)
-{
+export function makeDraggable(Ele: HTMLElement) {
     let scale = 1;
     let originX = 0;
     let originY = 0;
     let isDragging = false;
     let startX: number, startY: number;
 
-    Ele.style.cursor = 'grab';
+    Ele.style.cursor = "grab";
 
     type cancelCallbackArrType = ReturnType<typeof makeEventListener>[];
-    let cancelCallbackArr: cancelCallbackArrType = []
+    let cancelCallbackArr: cancelCallbackArrType = [];
 
-    const cancelMouseDown = makeEventListener('mousedown', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        isDragging = true;
-        startX = event.clientX;
-        startY = event.clientY;
-        Ele.style.cursor = 'grabbing';
-    }, Ele);
+    const cancelMouseDown = makeEventListener(
+        "mousedown",
+        (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            isDragging = true;
+            startX = event.clientX;
+            startY = event.clientY;
+            Ele.style.cursor = "grabbing";
+        },
+        Ele,
+    );
     cancelCallbackArr.push(cancelMouseDown);
 
-    Ele.onclick = event => event.stopPropagation();
+    Ele.onclick = (event) => event.stopPropagation();
 
-    const cancelMouseUp = makeEventListener('mouseup', (event) => {
+    const cancelMouseUp = makeEventListener("mouseup", (event) => {
         event.stopPropagation();
         event.preventDefault();
         isDragging = false;
-        Ele.style.cursor = 'grab';
+        Ele.style.cursor = "grab";
     });
     cancelCallbackArr.push(cancelMouseUp);
 
-    const cancelMouseMove = makeEventListener('mousemove', (event) => {
+    const cancelMouseMove = makeEventListener("mousemove", (event) => {
         event.stopPropagation();
         event.preventDefault();
         if (!isDragging) return;
@@ -64,7 +67,6 @@ export function makeDraggable(Ele: HTMLElement)
     });
     cancelCallbackArr.push(cancelMouseMove);
 
-
     function reset() {
         scale = 1;
         originX = 0;
@@ -80,5 +82,5 @@ export function makeDraggable(Ele: HTMLElement)
                 cancelFn();
             }
         }, // cancel() {
-    }
+    };
 }

@@ -13,4 +13,4 @@ export const cornDebugModeHint = `
      |_|    |___/                                         |___/                            
 
 如果你看到这个, 说明 spyXX 仍然处于 debug 模式, 这不符合预期, 请联系 qq2402398917 来反馈问题, 谢谢你!
-`
+`;

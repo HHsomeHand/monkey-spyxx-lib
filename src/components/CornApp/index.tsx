@@ -1,25 +1,17 @@
-import clsx from 'clsx';
-import React, {useEffect, useRef} from 'react';
-import {memo} from "react";
-import {makeDraggable} from "@/utils/makeDraggable.ts";
-import {AppProps} from "antd";
+import clsx from "clsx";
+import React, { useEffect, useRef } from "react";
+import { memo } from "react";
+import { makeDraggable } from "@/utils/makeDraggable.ts";
+import { AppProps } from "antd";
 
 interface CornAppProps {
-    className?: string,
-    children?: React.ReactNode,
+    className?: string;
+    children?: React.ReactNode;
 }
 
-export const CornApp = memo((
-    props: CornAppProps
-) => {
-
+export const CornApp = memo((props: CornAppProps) => {
     return (
-        <div
-            className={clsx(
-                props.className,
-                "corn-app"
-            )}
-        >
+        <div className={clsx(props.className, "corn-app")}>
             {props.children}
         </div>
     );

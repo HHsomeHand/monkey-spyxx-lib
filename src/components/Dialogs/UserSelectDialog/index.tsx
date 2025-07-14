@@ -1,10 +1,10 @@
-import clsx from 'clsx';
-import React, {useEffect, useRef, useState} from 'react';
-import {memo} from "react";
-import {Modal} from "antd";
-import {makeDraggable} from "@/utils/makeDraggable.ts";
+import clsx from "clsx";
+import React, { useEffect, useRef, useState } from "react";
+import { memo } from "react";
+import { Modal } from "antd";
+import { makeDraggable } from "@/utils/makeDraggable.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
-import {Simulate} from "react-dom/test-utils";
+import { Simulate } from "react-dom/test-utils";
 import cancel = Simulate.cancel;
 import CancelFnArr from "@/class/CancelFnArr.ts";
 import {
@@ -14,18 +14,16 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 interface UserSelectDialogProps {
-    className?: string,
-    onResult: (result: string) => void,
-    title?: string,
-    width?: number,
+    className?: string;
+    onResult: (result: string) => void;
+    title?: string;
+    width?: number;
 }
 
-export const UserSelectDialog = memo((
-    props: UserSelectDialogProps
-) => {
+export const UserSelectDialog = memo((props: UserSelectDialogProps) => {
     const {
         title: propTitle = "请将光标移动到目标控件上",
         width: propWidth = 200,
@@ -85,16 +83,16 @@ export const UserSelectDialog = memo((
         <div ref={containerRef}>
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogContent>
-                    <DialogHeader >
+                    <DialogHeader>
                         <DialogTitle>{propTitle}</DialogTitle>
                         <DialogDescription>
-                            This action cannot be undone. This will permanently delete your account
-                            and remove your data from our servers.
+                            This action cannot be undone. This will permanently
+                            delete your account and remove your data from our
+                            servers.
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-
         </div>
     );
 });

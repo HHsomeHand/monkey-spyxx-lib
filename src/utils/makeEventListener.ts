@@ -1,7 +1,7 @@
 type EventHandler<T, K extends keyof DocumentEventMap> = (
     this: T,
     ev: DocumentEventMap[K],
-) => any
+) => any;
 
 export default function makeEventListener<
     T extends Element | Document | Window,
@@ -12,7 +12,7 @@ export default function makeEventListener<
     target: T = window as any,
     options: boolean | AddEventListenerOptions = false,
 ) {
-    target.addEventListener(event, listener as any, options)
+    target.addEventListener(event, listener as any, options);
 
-    return () => target.removeEventListener(event, listener as any, options)
+    return () => target.removeEventListener(event, listener as any, options);
 }

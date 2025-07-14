@@ -1,3 +1,3 @@
 interface Window {
-    spyXX: ISpyXX
+    spyXX: ISpyXX;
 }

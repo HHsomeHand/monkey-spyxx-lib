@@ -1,9 +1,8 @@
-type CancelFn = (() => void);
+type CancelFn = () => void;
 type CancelFnArrType = CancelFn[];
 
 export class CancelFnArr {
-    constructor(public arr: CancelFnArrType = []) {
-    }
+    constructor(public arr: CancelFnArrType = []) {}
 
     push(fn: CancelFn) {
         return this.arr.push(fn);
@@ -11,14 +10,14 @@ export class CancelFnArr {
 
     doCancel() {
         for (const cancelFn of this.arr) {
-            cancelFn()
+            cancelFn();
         }
     }
 
     getDoCancelFn() {
         return () => {
             this.doCancel();
-        }
+        };
     }
 }
 
