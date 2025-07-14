@@ -1,6 +1,21 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+/*
+  修改了原来的 base 层, 避免和页面产生冲突
+  @import "tailwindcss/preflight.css" layer(base);
+*/
+@import "./base.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+
 @import "tw-animate-css";
 
+/*
+ :dark 标记的元素, 是某个带有 .dark 类的元素的后代。
+ 也就是 :dark 要生效, 需要满足这个条件:
+  该元素是 .dart 元素的后代元素
+ */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -41,7 +56,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-:root {
+.corn-app {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -76,7 +91,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+.corn-app .dark, .corn-app.dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -111,10 +126,10 @@
 }
 
 @layer base {
-  * {
+  .corn-app * {
     @apply border-border outline-ring/50;
   }
-  body {
+  .corn-app {
     @apply bg-background text-foreground;
   }
 }
