@@ -30,10 +30,14 @@ export function makeDraggable(Ele: HTMLElement) {
         (event) => {
             event.stopPropagation();
             event.preventDefault();
+
             isDragging = true;
+
             startX = event.clientX;
             startY = event.clientY;
+
             Ele.style.cursor = "grabbing";
+            Ele.style.animationDuration = "0s";
         },
         Ele,
     );
@@ -45,7 +49,9 @@ export function makeDraggable(Ele: HTMLElement) {
         event.stopPropagation();
         event.preventDefault();
         isDragging = false;
+
         Ele.style.cursor = "grab";
+        Ele.style.animationDuration = "";
     });
     cancelCallbackArr.push(cancelMouseUp);
 

@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
 import { ISpyXX } from "@/types";
 import "@/assets/css/global.css";
-import UserSelectDialog from "@/components/Dialogs/UserSelectDialog";
 import { CornApp } from "@/components/CornApp";
 
 function renderDialog(dialog: React.ReactNode) {
@@ -25,7 +24,8 @@ const spyXX: ISpyXX = {
 
             renderDialog(
                 <CornApp>
-                    <UserSelectDialog onResult={onResult} />
+                    Hello world;
+                    {/*<UserSelectDialog onResult={onResult} />*/}
                 </CornApp>,
             );
         });
