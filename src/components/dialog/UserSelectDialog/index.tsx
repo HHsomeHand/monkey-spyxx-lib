@@ -8,6 +8,7 @@ import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@
 import CancelFnArr from '@/class/CancelFnArr.ts';
 import {makeDraggable} from "@/utils/makeDraggable.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
+import {makeDraggableInContainer} from "@/utils/makeDraggableInContainer.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -38,7 +39,7 @@ export const UserSelectDialog = memo((
         const bodyEl = bodyRef.current;
 
         {
-            const {cancel} = makeDraggable(dialogEl);
+            const {cancel} = makeDraggableInContainer(dialogEl);
 
             cancelFnArr.push(cancel);
         }

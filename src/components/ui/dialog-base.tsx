@@ -8,7 +8,7 @@ export function CornDialog({
 }: React.ComponentProps<"div">) {
     return (
         <div
-            className={clsx(`text-text bg-background border-border border-1 w-100 h-50 z-999 fixed corn-center rounded-lg px-4 pb-4`, className)}
+            className={clsx(`text-text bg-background border-border border-1 w-100 h-50 z-999 fixed top-0 left-0 rounded-lg px-4 pb-4`, className)}
             {...props}
             data-slot="dialog"
         >
