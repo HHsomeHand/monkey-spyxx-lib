@@ -4,6 +4,7 @@ import {throttle} from "lodash";
 interface MakeDraggableInContainerProps {
     gapX: number,
     gapY: number,
+    throttleWait: number,
 }
 
 // 拖拽通过 translate 实现, 如果 targetEl 本身有 translate, 请移动到 transform, 让二者叠加就 ok
@@ -14,6 +15,7 @@ export function makeDraggableInContainer(
     options: MakeDraggableInContainerProps = {
         gapX: 0,
         gapY: 0,
+        throttleWait: 1000,
     }
 ) {
     let minX: number = 0;
@@ -43,7 +45,7 @@ export function makeDraggableInContainer(
         const diffY = originRect.y - rect.y;
         minY -= diffY;
         maxY -= diffY;
-    }, 1000);
+    }, options.throttleWait);
 
     // 上一次使用的 x
     let lastX = 0;
@@ -58,7 +60,7 @@ export function makeDraggableInContainer(
             x: rect.x - lastX,
             y: rect.y - lastY,
         }
-    }, 1000);
+    }, options.throttleWait);
 
     // 创建观察器实例
     const resizeObserver = new ResizeObserver(() => {
