@@ -6,7 +6,7 @@ interface MakeDraggableInContainerProps {
     gapY: number,
 }
 
-// 仅适合 targetEl 作为 absolute 或 fixed 元素, top: 0; left 0; 的情况, 不适合其他情况
+// 拖拽通过 translate 实现, 如果 targetEl 本身有 translate, 请移动到 transform, 让二者叠加就 ok
 export function makeDraggableInContainer(
     targetEl: HTMLElement,
     containerEl: HTMLElement = document.body,
@@ -21,16 +21,28 @@ export function makeDraggableInContainer(
     let minY: number = 0;
     let maxY: number = 0;
 
+    const originRect = targetEl.getBoundingClientRect();
+
     const calcLimit = throttle(() => {
         let targetWidth = targetEl.offsetWidth;
         let targetHeight = targetEl.offsetHeight;
 
         // 获取父元素边界
         const rect = containerEl.getBoundingClientRect();
+
         minX = rect.left + options.gapX; // 左边界
         maxX = rect.right - targetWidth - options.gapX; // 右边界
+
+        const diffX = originRect.x - rect.x;
+        minX -= diffX;
+        maxX -= diffX;
+
         minY = rect.top + options.gapY; // 上边界
         maxY = rect.bottom - targetHeight - options.gapY; // 下边界
+
+        const diffY = originRect.y - rect.y;
+        minY -= diffY;
+        maxY -= diffY;
     }, 500);
 
     calcLimit();
