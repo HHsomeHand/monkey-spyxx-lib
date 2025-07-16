@@ -1,7 +1,7 @@
 import {makeDraggable, setElmTranslate} from "@/utils/makeDraggableV2.ts";
 import {throttle} from "lodash";
 
-interface MakeDraggableInContainerProps {
+export interface MakeDraggableInContainerProps {
     gapX: number,
     gapY: number,
     throttleWait: number,

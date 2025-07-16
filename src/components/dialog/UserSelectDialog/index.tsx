@@ -10,6 +10,7 @@ import {makeDraggable} from "@/utils/makeDraggable.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
 import {makeDraggableInContainer} from "@/utils/makeDraggableInContainer.ts";
 import {getSelector} from "@/utils/getSelector.ts";
+import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -24,39 +25,10 @@ export const UserSelectDialog = memo((
         title: propTitle = ""
     } = props;
 
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const bodyRef = useRef<HTMLDivElement>(null);
+    const {bodyRef, containerRef} = useDraggableContainer();
 
     const [currSelector, setCurrSelector] = useState("");
 
-    useEffect(() => {
-        const cancelFnArr = new CancelFnArr();
-
-        if (!containerRef.current) return;
-
-        const dialogEl = containerRef.current;
-
-        if (!bodyRef.current) return;
-
-        const bodyEl = bodyRef.current;
-
-        {
-            const {cancel} = makeDraggableInContainer(dialogEl);
-
-            cancelFnArr.push(cancel);
-        }
-
-        {
-            const cancel = makeEventListener('mousedown', (e) => {
-                e.stopPropagation();
-            }, bodyEl);
-
-            cancelFnArr.push(cancel);
-        }
-
-        return cancelFnArr.getDoCancelFn();
-    }, []);
 
     useEffect(() => {
         const cancelFnArr = new CancelFnArr();
@@ -161,7 +133,7 @@ export const UserSelectDialog = memo((
                         {propTitle}
                     </CornDialogHeader>
 
-                    <CornDialogBody ref={bodyRef}>
+                    <CornDialogBody className="flex flex-col gap-3" ref={bodyRef}>
                         {_DialogBody()}
                     </CornDialogBody>
                 </CornDialogContent>
