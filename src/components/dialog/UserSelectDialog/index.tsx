@@ -1,6 +1,6 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {memo} from "react";
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
@@ -9,6 +9,7 @@ import CancelFnArr from '@/class/CancelFnArr.ts';
 import {makeDraggable} from "@/utils/makeDraggable.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
 import {makeDraggableInContainer} from "@/utils/makeDraggableInContainer.ts";
+import {getSelector} from "@/utils/getSelector.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -26,6 +27,8 @@ export const UserSelectDialog = memo((
     const containerRef = useRef<HTMLDivElement>(null);
 
     const bodyRef = useRef<HTMLDivElement>(null);
+
+    const [currSelector, setCurrSelector] = useState("");
 
     useEffect(() => {
         const cancelFnArr = new CancelFnArr();
@@ -58,8 +61,10 @@ export const UserSelectDialog = memo((
     useEffect(() => {
         const cancelFnArr = new CancelFnArr();
 
-        const setCurrEl = (() => {
+        const {setCurrEl, setCancel} = (() => {
             let currEl: HTMLElement | null = null;
+
+            let isCancel: boolean = false;
 
             let tmpBoxShadow = "";
 
@@ -77,6 +82,10 @@ export const UserSelectDialog = memo((
             }
 
             function setCurrEl(el: HTMLElement) {
+                if (isCancel) {
+                    return;
+                }
+
                 if (currEl === el) {
                     return;
                 }
@@ -90,6 +99,8 @@ export const UserSelectDialog = memo((
                 currEl = el;
 
                 tmpBoxShadow = currEl.style.boxShadow;
+
+                setCurrSelector(getSelector(currEl).selector);
             }
 
             cancelFnArr.push(() => {
@@ -98,23 +109,46 @@ export const UserSelectDialog = memo((
                 clearInterval(id);
             });
 
-            return setCurrEl;
-        })();
-
-        const cancel = makeEventListener("mousemove", (e) => {
-            const targetEl = document.elementFromPoint(e.clientX, e.clientY);
-
-            if (!targetEl) {
-                return;
+            function setCancel(paramIsCancel: boolean) {
+                isCancel = paramIsCancel;
             }
 
-            setCurrEl(targetEl as HTMLElement);
-        });
+            return {
+                setCurrEl,
+                setCancel
+            }
+        })();
 
-        cancelFnArr.push(cancel);
+        {
+            const cancel = makeEventListener("mousemove", (e) => {
+                const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+
+                if (!targetEl) {
+                    return;
+                }
+
+                setCurrEl(targetEl as HTMLElement);
+            });
+
+            cancelFnArr.push(cancel);
+        }
+
+        {
+            const cancel = makeEventListener("click", (e) => {
+                setCancel(true);
+            }, window, true);
+        }
 
         return cancelFnArr.getDoCancelFn();
     }, []);
+
+    function _DialogBody() {
+        return currSelector !== "" &&  (
+            <p>
+                {currSelector}
+            </p>
+        )
+    }
 
 
     return (
@@ -128,7 +162,7 @@ export const UserSelectDialog = memo((
                     </CornDialogHeader>
 
                     <CornDialogBody ref={bodyRef}>
-
+                        {_DialogBody()}
                     </CornDialogBody>
                 </CornDialogContent>
             </CornDialog>
