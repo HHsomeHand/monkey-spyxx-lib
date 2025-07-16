@@ -18,37 +18,49 @@ export function CornDialog({
 }
 
 
-export function CornDialogSection({
+export function CornDialogContent({
    children,
    className,
    ...props
 }: React.ComponentProps<"div">) {
     return (
-        <div className={clsx("w-full h-full flex flex-col", className)} data-slot="dialog__section">
+        <div
+            className={clsx("w-full h-full flex flex-col", className)}
+            data-slot="dialog__content"
+            {...props}
+        >
             {children}
         </div>
     )
 }
 
-export function CornDialogTitle({
+export function CornDialogHeader({
   children,
   className,
   ...props
 }: React.ComponentProps<"div">) {
     return (
-        <div className={clsx("text-base/12 text-center font-bold", className)} data-slot="dialog__title">
+        <div
+            className={clsx("text-base/12 text-center font-bold", className)}
+            data-slot="dialog__title"
+            {...props}
+        >
             {children}
         </div>
     )
 }
 
-export function CornDialogContent({
+export function CornDialogBody({
     children,
     className,
     ...props
 }: React.ComponentProps<"div">) {
     return (
-        <div className={clsx("grow bg-content rounded-lg", className)} data-slot="dialog__content">
+        <div
+            className={clsx("grow bg-content rounded-lg cursor-default", className)}
+            data-slot="dialog__body"
+            {...props}
+        >
             {children}
         </div>
     )

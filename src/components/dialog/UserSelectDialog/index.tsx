@@ -1,10 +1,13 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {memo} from "react";
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
-import {CornDialog, CornDialogContent, CornDialogSection, CornDialogTitle} from "@/components/ui/dialog-base.tsx";
+import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
+import CancelFnArr from '@/class/CancelFnArr.ts';
+import {makeDraggable} from "@/utils/makeDraggable.ts";
+import makeEventListener from "@/utils/makeEventListener.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -19,20 +22,53 @@ export const UserSelectDialog = memo((
         title: propTitle = ""
     } = props;
 
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const bodyRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const cancelFnArr = new CancelFnArr();
+
+        if (!containerRef.current) return;
+
+        const dialogEl = containerRef.current;
+
+        if (!bodyRef.current) return;
+
+        const bodyEl = bodyRef.current;
+
+        {
+            const {cancel} = makeDraggable(dialogEl);
+
+            cancelFnArr.push(cancel);
+        }
+
+        {
+            const cancel = makeEventListener('mousedown', (e) => {
+                e.stopPropagation();
+            }, bodyEl);
+
+            cancelFnArr.push(cancel);
+        }
+
+        return cancelFnArr.getDoCancelFn();
+    }, []);
+
+
     return (
         <UserSelectDialogWrapper
             className={clsx("user-select-dialog", props.className)}
         >
-            <CornDialog>
-                <CornDialogSection>
-                    <CornDialogTitle>
+            <CornDialog ref={containerRef}>
+                <CornDialogContent>
+                    <CornDialogHeader>
                         {propTitle}
-                    </CornDialogTitle>
+                    </CornDialogHeader>
 
-                    <CornDialogContent>
+                    <CornDialogBody ref={bodyRef}>
 
-                    </CornDialogContent>
-                </CornDialogSection>
+                    </CornDialogBody>
+                </CornDialogContent>
             </CornDialog>
         </UserSelectDialogWrapper>
     );
