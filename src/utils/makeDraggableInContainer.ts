@@ -29,7 +29,7 @@ export function makeDraggableInContainer(
 
     let originRect = targetEl.getBoundingClientRect();
 
-    const calcLimit = throttle(() => {
+    function calcLimit() {
         let targetWidth = targetEl.offsetWidth;
         let targetHeight = targetEl.offsetHeight;
 
@@ -49,14 +49,16 @@ export function makeDraggableInContainer(
         const diffY = originRect.y - rect.y;
         minY -= diffY;
         maxY -= diffY;
-    }, optionThrottleWait);
+    }
+
+    const calcLimitThrottle = throttle(calcLimit, optionThrottleWait);
 
     // 上一次使用的 x
     let lastX = 0;
     let lastY = 0;
 
     // 处理父容器大小变动的边界情况
-    const calcOrigin = throttle(() => {
+    function calcOrigin() {
         const rect = targetEl.getBoundingClientRect();
 
         originRect = {
@@ -64,10 +66,14 @@ export function makeDraggableInContainer(
             x: rect.x - lastX,
             y: rect.y - lastY,
         }
-    }, optionThrottleWait);
+    };
 
     // 创建观察器实例
     const resizeObserver = new ResizeObserver(() => {
+        calcOrigin();
+
+        calcLimit();
+
         const {x, y} = setTranslate(lastX, lastY)
 
         result.setPos(x, y);
@@ -77,7 +83,7 @@ export function makeDraggableInContainer(
     resizeObserver.observe(targetEl);
     resizeObserver.observe(optionContainerEl);
 
-    calcLimit();
+    calcLimitThrottle();
 
     optionInitCallback({
         minX,
@@ -87,10 +93,6 @@ export function makeDraggableInContainer(
     });
 
     function setTranslate(x: number, y: number) {
-        calcOrigin();
-
-        calcLimit();
-
         // 限制 x 和 y 在父元素范围内
         const restrictedX = Math.max(minX, Math.min(maxX, x));
         const restrictedY = Math.max(minY, Math.min(maxY, y));
@@ -107,6 +109,8 @@ export function makeDraggableInContainer(
     }
 
     const result = makeDraggable(targetEl, (x, y) => {
+        calcLimitThrottle();
+
         setTranslate(x, y);
     });
 
