@@ -60,6 +60,15 @@ export function makeDraggableInContainer(
         }
     }, 1000);
 
+    // 创建观察器实例
+    const resizeObserver = new ResizeObserver(() => {
+        setTranslate(lastX, lastY)
+    });
+
+    // 开始监听目标元素
+    resizeObserver.observe(targetEl);
+    resizeObserver.observe(containerEl);
+
     calcLimit();
 
     initCallback?.({
@@ -69,7 +78,7 @@ export function makeDraggableInContainer(
         maxY,
     });
 
-    return makeDraggable(targetEl, (x, y) => {
+    function setTranslate(x: number, y: number) {
         calcOrigin();
 
         calcLimit();
@@ -82,5 +91,19 @@ export function makeDraggableInContainer(
         lastY = restrictedY;
 
         setElmTranslate(targetEl, restrictedX, restrictedY);
+    }
+
+    const result = makeDraggable(targetEl, (x, y) => {
+        setTranslate(x, y);
     });
+
+    return {
+        ...result,
+        cancel() {
+            result.cancel();
+
+            resizeObserver.unobserve(targetEl);
+            resizeObserver.unobserve(containerEl);
+        }
+    }
 }
