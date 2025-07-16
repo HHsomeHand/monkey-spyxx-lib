@@ -11,8 +11,11 @@ export function getSelector(element: Element) {
         }
 
         if (current.className) {
-            const classes = current.className.split(' ').filter(c => c).join('.');
-            selector += `.${classes}`;
+            const classes = String(current.className).split(' ').filter(c => c).join('.');
+
+            if (classes) {
+                selector += `.${classes}`;
+            }
         }
 
         const siblings = Array.from(current.parentElement!.children).filter(

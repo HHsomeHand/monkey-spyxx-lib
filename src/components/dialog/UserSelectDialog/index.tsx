@@ -29,14 +29,15 @@ export const UserSelectDialog = memo((
 
     const [currSelector, setCurrSelector] = useState("");
 
+    const setPauseSelectRef = useRef<(isCancel: boolean) => void>();
 
     useEffect(() => {
         const cancelFnArr = new CancelFnArr();
 
-        const {setCurrEl, setCancel} = (() => {
+        const {setCurrEl, setPauseSelect} = (() => {
             let currEl: HTMLElement | null = null;
 
-            let isCancel: boolean = false;
+            let isPauseSelect: boolean = false;
 
             let tmpBoxShadow = "";
 
@@ -54,7 +55,7 @@ export const UserSelectDialog = memo((
             }
 
             function setCurrEl(el: HTMLElement) {
-                if (isCancel) {
+                if (isPauseSelect) {
                     return;
                 }
 
@@ -81,15 +82,17 @@ export const UserSelectDialog = memo((
                 clearInterval(id);
             });
 
-            function setCancel(paramIsCancel: boolean) {
-                isCancel = paramIsCancel;
+            function setPauseSelect(paramIsPauseSelect: boolean) {
+                isPauseSelect = paramIsPauseSelect;
             }
 
             return {
                 setCurrEl,
-                setCancel
+                setPauseSelect
             }
         })();
+
+        setPauseSelectRef.current = setPauseSelect;
 
         {
             const cancel = makeEventListener("mousemove", (e) => {
@@ -107,7 +110,7 @@ export const UserSelectDialog = memo((
 
         {
             const cancel = makeEventListener("click", (e) => {
-                setCancel(true);
+                setPauseSelect(true);
             }, window, true);
         }
 
@@ -115,10 +118,27 @@ export const UserSelectDialog = memo((
     }, []);
 
     function _DialogBody() {
-        return currSelector !== "" &&  (
-            <p>
-                {currSelector}
-            </p>
+        return  (
+            <>
+                {
+                    currSelector !== "" && <p>
+                        {currSelector}
+                    </p>
+                }
+
+                <p>
+                    划过下方的感应区, 继续进行选择:
+                </p>
+
+                <div
+                    className="w-10 h-5 bg-background"
+                    onMouseMove={e => {
+                        setPauseSelectRef.current?.(false);
+                    }}
+                >
+
+                </div>
+            </>
         )
     }
 
@@ -133,7 +153,7 @@ export const UserSelectDialog = memo((
                         {propTitle}
                     </CornDialogHeader>
 
-                    <CornDialogBody className="flex flex-col gap-3" ref={bodyRef}>
+                    <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>
                         {_DialogBody()}
                     </CornDialogBody>
                 </CornDialogContent>
