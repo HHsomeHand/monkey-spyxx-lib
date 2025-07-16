@@ -21,7 +21,7 @@ export function makeDraggableInContainer(
     let minY: number = 0;
     let maxY: number = 0;
 
-    const originRect = targetEl.getBoundingClientRect();
+    let originRect = targetEl.getBoundingClientRect();
 
     const calcLimit = throttle(() => {
         let targetWidth = targetEl.offsetWidth;
@@ -43,7 +43,22 @@ export function makeDraggableInContainer(
         const diffY = originRect.y - rect.y;
         minY -= diffY;
         maxY -= diffY;
-    }, 500);
+    }, 1000);
+
+    // 上一次使用的 x
+    let lastX = 0;
+    let lastY = 0;
+
+    // 处理父容器大小变动的边界情况
+    const calcOrigin = throttle(() => {
+        const rect = targetEl.getBoundingClientRect();
+
+        originRect = {
+            ...originRect,
+            x: rect.x - lastX,
+            y: rect.y - lastY,
+        }
+    }, 1000);
 
     calcLimit();
 
@@ -55,13 +70,16 @@ export function makeDraggableInContainer(
     });
 
     return makeDraggable(targetEl, (x, y) => {
+        calcOrigin();
+
         calcLimit();
 
         // 限制 x 和 y 在父元素范围内
         const restrictedX = Math.max(minX, Math.min(maxX, x));
         const restrictedY = Math.max(minY, Math.min(maxY, y));
 
-        console.log(restrictedX, restrictedY);
+        lastX = restrictedX;
+        lastY = restrictedY;
 
         setElmTranslate(targetEl, restrictedX, restrictedY);
     });
