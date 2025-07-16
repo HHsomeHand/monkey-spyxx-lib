@@ -68,7 +68,9 @@ export function makeDraggableInContainer(
 
     // 创建观察器实例
     const resizeObserver = new ResizeObserver(() => {
-        setTranslate(lastX, lastY)
+        const {x, y} = setTranslate(lastX, lastY)
+
+        result.setPos(x, y);
     });
 
     // 开始监听目标元素
@@ -97,6 +99,11 @@ export function makeDraggableInContainer(
         lastY = restrictedY;
 
         setElmTranslate(targetEl, restrictedX, restrictedY);
+
+        return {
+            x: lastX,
+            y: lastY,
+        }
     }
 
     const result = makeDraggable(targetEl, (x, y) => {

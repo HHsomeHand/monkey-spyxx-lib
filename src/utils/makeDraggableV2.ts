@@ -94,5 +94,9 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
                 cancelFn();
             }
         }, // cancel() {
+        setPos(x: number, y: number) {
+            originX = x;
+            originY = y;
+        }
     };
 }
