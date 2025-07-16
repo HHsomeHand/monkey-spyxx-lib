@@ -55,6 +55,67 @@ export const UserSelectDialog = memo((
         return cancelFnArr.getDoCancelFn();
     }, []);
 
+    useEffect(() => {
+        const cancelFnArr = new CancelFnArr();
+
+        const setCurrEl = (() => {
+            let currEl: HTMLElement | null = null;
+
+            let tmpBoxShadow = "";
+
+            const id = setInterval(() => {
+                if (!currEl) return;
+
+                /* x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
+                currEl.style.boxShadow = "0px 0px 0px 2px red"
+            });
+
+            function resetShadow() {
+                if (currEl) {
+                    currEl.style.boxShadow = tmpBoxShadow;
+                }
+            }
+
+            function setCurrEl(el: HTMLElement) {
+                if (currEl === el) {
+                    return;
+                }
+
+                if (el.matches(".corn-app *, .corn-app")) {
+                    return;
+                }
+
+                resetShadow();
+
+                currEl = el;
+
+                tmpBoxShadow = currEl.style.boxShadow;
+            }
+
+            cancelFnArr.push(() => {
+                resetShadow();
+
+                clearInterval(id);
+            });
+
+            return setCurrEl;
+        })();
+
+        const cancel = makeEventListener("mousemove", (e) => {
+            const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+
+            if (!targetEl) {
+                return;
+            }
+
+            setCurrEl(targetEl as HTMLElement);
+        });
+
+        cancelFnArr.push(cancel);
+
+        return cancelFnArr.getDoCancelFn();
+    }, []);
+
 
     return (
         <UserSelectDialogWrapper
