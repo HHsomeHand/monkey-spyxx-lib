@@ -4,6 +4,7 @@ import React from 'react';
 import {memo} from "react";
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
+import {CornDialog, CornDialogContent, CornDialogSection, CornDialogTitle} from "@/components/ui/dialog-base.tsx";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -22,19 +23,21 @@ export const UserSelectDialog = memo((
         <UserSelectDialogWrapper
             className={clsx("user-select-dialog", props.className)}
         >
-            <div className="text-text bg-background border-border border-1 w-100 h-50 z-999 fixed corn-center rounded-lg" data-slot="dialog">
-                <div className="w-full h-full flex flex-col" data-slot="dialog__section">
-                    <div className="text-base/12 text-center font-bold" data-slot="dialog__title">
+            <CornDialog>
+                <CornDialogSection>
+                    <CornDialogTitle>
                         {propTitle}
-                    </div>
+                    </CornDialogTitle>
 
-                    <div className="grow bg-content rounded-lg mx-4 mb-4" data-slot="dialog__content">
+                    <CornDialogContent>
 
-                    </div>
-                </div>
-            </div>
+                    </CornDialogContent>
+                </CornDialogSection>
+            </CornDialog>
         </UserSelectDialogWrapper>
     );
 });
+
+
 
 export default UserSelectDialog;
