@@ -4,6 +4,7 @@ import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
 import { ISpyXX } from "@/types";
 import "@/assets/css/global.css";
 import { CornApp } from "@/components/CornApp";
+import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 
 function renderDialog(dialog: React.ReactNode) {
     return ReactDOM.createRoot(
@@ -24,8 +25,8 @@ const spyXX: ISpyXX = {
 
             renderDialog(
                 <CornApp>
-                    Hello world;
-                    {/*<UserSelectDialog onResult={onResult} />*/}
+
+                    <UserSelectDialog title="请将光标放在目标元素上:" onResult={onResult} />
                 </CornApp>,
             );
         });
