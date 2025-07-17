@@ -5,6 +5,8 @@ export function getSelector(element: Element) {
     while (current !== null && current !== document.documentElement) {
         let selector = current.tagName.toLowerCase();
 
+        let isHTMLElement = current instanceof HTMLElement;
+
         if (current.id) {
             path.unshift(`#${current.id}`);
 
@@ -13,7 +15,7 @@ export function getSelector(element: Element) {
 
         let isElHasClassName = false;
 
-        if (current.className) {
+        if (current.className && isHTMLElement) {
             const classes = String(current.className).split(' ').filter(c => c).join('.');
 
             if (classes) {
@@ -22,6 +24,19 @@ export function getSelector(element: Element) {
 
             isElHasClassName = true;
         }
+
+        const siblings = Array.from(current.parentElement!.children).filter(
+            sibling => {
+                let isSameTag = sibling.tagName === current!.tagName;
+
+                let isSameClassName = true;
+
+                if (isElHasClassName && isHTMLElement) {
+                    isSameClassName = hasSameClasses(sibling, current!);
+                }
+                return isSameTag && isSameClassName;
+            }
+        );
 
         function hasSameClasses(element1: Element, element2: Element): boolean {
             // 将第一个元素的类名存入 Set
@@ -44,19 +59,6 @@ export function getSelector(element: Element) {
 
             return true;
         }
-
-        const siblings = Array.from(current.parentElement!.children).filter(
-            sibling => {
-                let isSameTag = sibling.tagName === current!.tagName;
-
-                let isSameClassName = true;
-
-                if (isElHasClassName) {
-                    isSameClassName = hasSameClasses(sibling, current!);
-                }
-                return isSameTag && isSameClassName;
-            }
-        );
 
         if (siblings.length > 1) {
             const index = siblings.indexOf(current) + 1;

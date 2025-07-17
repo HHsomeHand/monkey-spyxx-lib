@@ -12,6 +12,7 @@ import {throttle} from "lodash";
 import {useStateRef} from "@/hooks/useStateRef.ts";
 import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
+import CornSelectorDisplayer from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -93,13 +94,21 @@ export const UserSelectDialog = memo((
             return;
         }
 
-        const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+        let targetEl = document.elementFromPoint(e.clientX, e.clientY);
 
         if (!targetEl) {
             return;
         }
 
-        setCurrSelectedEl(targetEl as HTMLElement);
+        while (!(targetEl instanceof HTMLElement)) {
+            if (!targetEl) {
+                return;
+            }
+
+            targetEl = targetEl.parentNode as Element;
+        }
+
+        setCurrSelectedEl(targetEl);
     }, 100), []));
 
     // 实现点击暂停监听
@@ -139,7 +148,7 @@ export const UserSelectDialog = memo((
     function _DialogBody() {
         return  (
             <>
-                <_SelectorDisplayer/>
+                <CornSelectorDisplayer currSelectorArr={currSelectorArr}/>
 
                 <p>
                     当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
@@ -160,49 +169,6 @@ export const UserSelectDialog = memo((
                 <CornButton onClick={onCancelBtnClick}>
                     提交
                 </CornButton>
-            </>
-        )
-    }
-
-    function _SelectorDisplayer() {
-        const [showIndex, setShowIndex] = useState(-1);
-
-        let showLength = currSelectorArr.length;
-
-        let showList = currSelectorArr;
-
-        if (showIndex !== -1) {
-            showList = currSelectorArr.slice(0, showIndex + 1);
-
-            showLength = showIndex + 1;
-        }
-
-        return (
-            <>
-                {
-                    currSelectorArr.length !== 0 && <section className="flex flex-wrap">
-                        {
-                            showList.map((selector, index) => {
-                                function onSelectorClick() {
-                                    setShowIndex(index);
-
-                                    console.log("switch")
-                                }
-
-                                return (
-                                    <React.Fragment key={selector}>
-                                        <CornButton onClick={onSelectorClick}>{selector}</CornButton>
-                                        {
-                                            index < showLength - 1 && (
-                                                <div className="mx-1">&gt;</div>
-                                            )
-                                        }
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                    </section>
-                }
             </>
         )
     }
