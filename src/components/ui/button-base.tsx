@@ -15,7 +15,7 @@ export function CornButton({
 }) {
     const btnRef = useRef<HTMLButtonElement>(null);
 
-    useEventListener(btnRef, "click", onClick);
+    useEventListener(btnRef.current, "click", onClick);
 
     return (
         <button

@@ -2,19 +2,19 @@ import {RefObject, useEffect, useRef} from "react";
 import {makeEventListener, EventHandler} from "@/utils/makeEventListener.ts";
 
 export function useEventListener<
-    T extends Element,
+    T extends Element | Document | Window,
     K extends keyof DocumentEventMap,
 >(
-    target: RefObject<T>,
+    target: T | null,
     event: K,
     listener: EventHandler<T, K>,
     options: boolean | AddEventListenerOptions = false,
 ) {
     useEffect(() => {
-        if (!target.current) return;
+        if (!target) return;
 
-        return makeEventListener(event, listener, target.current, options);
-    }, [target.current, listener]);
+        return makeEventListener(event, listener, target, options);
+    }, [target, listener]);
 }
 
 export default useEventListener;

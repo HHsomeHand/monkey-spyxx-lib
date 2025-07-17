@@ -1,19 +1,15 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {memo} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
-import CancelFnArr from '@/class/CancelFnArr.ts';
-import {makeDraggable} from "@/utils/makeDraggable.ts";
-import makeEventListener from "@/utils/makeEventListener.ts";
-import {makeDraggableInContainer} from "@/utils/makeDraggableInContainer.ts";
 import {getSelector} from "@/utils/getSelector.ts";
 import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
 import useEventListener from "@/hooks/useEventListener.ts";
-import {useStateRef} from "@/hooks/useStateRef.ts";
 import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
+import {throttle} from "lodash";
+import {useStateRef} from "@/hooks/useStateRef.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -31,107 +27,88 @@ export const UserSelectDialog = memo((
 
     const {bodyRef, containerRef} = useDraggableContainer();
 
-    const [currSelector, setCurrSelector, currSelectorRef] = useStateRef<string[]>([]);
+    const [currSelectedEl, private_setCurrSelectedEl, currSelectedElRef] = useStateRef<HTMLElement | null>(null);
 
-    // 调用这个 ref.current 可以设置是否停止选择
-    const setPauseSelectRef = useRef<(isCancel: boolean) => void>();
+    function setCurrSelectedEl(el: HTMLElement) {
+        if (currSelectedEl === el) {
+            return;
+        }
 
-    // 实现选择元素
+        if (el.matches(".corn-app *, .corn-app")) {
+            return;
+        }
+
+        private_setCurrSelectedEl(el);
+    }
+
+    let preBoxShadowRef = useRef("");
+
+    // 实现 shadowBox 的保存与回复
     useEffect(() => {
-        const cancelFnArr = new CancelFnArr();
+        if (!currSelectedEl) return;
 
-        // setCurrEl 会标注当前元素的阴影
-        const {setCurrEl, setPauseSelect} = (() => {
-            let currEl: HTMLElement | null = null;
+        const savedPreEl = currSelectedEl;
 
-            let isPauseSelect: boolean = false;
+        preBoxShadowRef.current = savedPreEl.style.boxShadow;
 
-            let tmpBoxShadow = "";
-
-            const id = setInterval(() => {
-                if (!currEl) return;
-
-                /* x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
-                currEl.style.boxShadow = "0px 0px 0px 2px red"
-            });
-
-            function resetShadow() {
-                if (currEl) {
-                    currEl.style.boxShadow = tmpBoxShadow;
-                }
-            }
-
-            function setCurrEl(el: HTMLElement) {
-                if (isPauseSelect) {
-                    return;
-                }
-
-                if (currEl === el) {
-                    return;
-                }
-
-                if (el.matches(".corn-app *, .corn-app")) {
-                    return;
-                }
-
-                resetShadow();
-
-                currEl = el;
-
-                tmpBoxShadow = currEl.style.boxShadow;
-
-                setCurrSelector(getSelector(currEl).pathArray);
-            }
-
-            cancelFnArr.push(() => {
-                resetShadow();
-
-                clearInterval(id);
-            });
-
-            function setPauseSelect(paramIsPauseSelect: boolean) {
-                isPauseSelect = paramIsPauseSelect;
-            }
-
-            return {
-                setCurrEl,
-                setPauseSelect
-            }
-        })();
-
-        setPauseSelectRef.current = setPauseSelect;
-
-        // 监听 window mousemove 并 setCurrEl
-        {
-            const cancel = makeEventListener("mousemove", (e) => {
-                const targetEl = document.elementFromPoint(e.clientX, e.clientY);
-
-                if (!targetEl) {
-                    return;
-                }
-
-                setCurrEl(targetEl as HTMLElement);
-            });
-
-            cancelFnArr.push(cancel);
+        function resetShadow() {
+            savedPreEl.style.boxShadow = preBoxShadowRef.current;
         }
 
-        // 实现点击暂停监听
-        {
-            const cancel = makeEventListener("click", (e) => {
-                setPauseSelect(true);
-            }, window, true);
+        return () => {
+            resetShadow();
+        }
+    }, [currSelectedEl]);
+
+    const currSelectorArr = useMemo(() => {
+        if (!currSelectedEl) {
+            return [];
         }
 
-        return cancelFnArr.getDoCancelFn();
+        return getSelector(currSelectedEl).pathArray;
+    }, [currSelectedEl])
+
+    // 设置 shadowBox
+    useEffect(() => {
+        const id = setInterval(() => {
+            if (!currSelectedElRef.current) return;
+
+            /* x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
+            currSelectedElRef.current.style.boxShadow = "0px 0px 0px 2px red"
+        }, 100);
+
+        return () => {
+            clearInterval(id);
+        }
     }, []);
 
+    const isPauseSelectedRef = useRef(false);
+
+    // 实现鼠标移动选中元素
+    useEventListener(window, 'mousemove', useCallback(throttle((e) => {
+        if (isPauseSelectedRef.current) {
+            return;
+        }
+
+        const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+
+        if (!targetEl) {
+            return;
+        }
+
+        setCurrSelectedEl(targetEl as HTMLElement);
+    }, 100), []));
+
+    // 实现点击暂停监听
+    useEventListener(window, 'click', useCallback((e) => {
+        isPauseSelectedRef.current = true;
+    }, []));
+
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
-        props.onResult?.(currSelectorRef.current.join(" > "));
+        props.onResult?.(currSelectorArr.join(" > "));
 
         props.onIsShowDialogChange?.(false);
     }, []);
-
 
     return (
         <UserSelectDialogWrapper
@@ -163,7 +140,7 @@ export const UserSelectDialog = memo((
                 <div
                     className="w-10 h-5 bg-background"
                     onMouseMove={e => {
-                        setPauseSelectRef.current?.(false);
+                        isPauseSelectedRef.current = false;
                     }}
                 >
                 </div>
@@ -178,12 +155,12 @@ export const UserSelectDialog = memo((
     function _SelectorDisplayer() {
         const [showIndex, setShowIndex] = useState(-1);
 
-        let showLength = currSelector.length;
+        let showLength = currSelectorArr.length;
 
-        let showList = currSelector;
+        let showList = currSelectorArr;
 
         if (showIndex !== -1) {
-            showList = currSelector.slice(0, showIndex + 1);
+            showList = currSelectorArr.slice(0, showIndex + 1);
 
             showLength = showIndex + 1;
         }
@@ -191,7 +168,7 @@ export const UserSelectDialog = memo((
         return (
             <>
                 {
-                    currSelector.length !== 0 && <section className="flex flex-wrap">
+                    currSelectorArr.length !== 0 && <section className="flex flex-wrap">
                         {
                             showList.map((selector, index) => {
                                 function onSelectorClick() {
