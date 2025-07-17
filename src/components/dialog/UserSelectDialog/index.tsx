@@ -30,10 +30,9 @@ export const UserSelectDialog = memo((
         title: propTitle = ""
     } = props;
 
-    const {bodyRef, containerRef} = useDraggableContainer();
-
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
 
+    // 对 private_setCurrSelectedEl 进行封装, 避免选到对话框上的元素
     function setCurrSelectedEl(el: HTMLElement) {
         if (currSelectedEl === el) {
             return;
@@ -46,6 +45,7 @@ export const UserSelectDialog = memo((
         private_setCurrSelectedEl(el);
     }
 
+    // 保存选中元素的阴影样式, 方便选中下一个时, 恢复
     let preBoxShadowRef = useRef("");
 
     // 实现 shadowBox 的保存与回复
@@ -123,6 +123,9 @@ export const UserSelectDialog = memo((
         setIsPauseSelected(true);
     }, []), true);
 
+    // ======================
+    // ==== Dialog Body =====
+    // ======================
     const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
@@ -135,6 +138,49 @@ export const UserSelectDialog = memo((
         props.onIsShowDialogChange?.(false);
     }, []);
 
+
+    const onCurrElChange = useCallback((el: HTMLElement) => {
+        if (isPauseSelected) {
+            setCurrSelectedEl(el);
+        }
+    }, [isPauseSelected]);
+
+    let _DialogBody = (
+        <>
+            <CornSelectorDisplayer
+                ref={selectorDisplayerRef}
+                currSelectorArr={currSelectorArr}
+                onCurrElChange={onCurrElChange}
+            />
+
+            <p>
+                当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
+            </p>
+
+            <p>
+                划过下方的感应区, 继续进行选择:
+            </p>
+
+            <div
+                className="w-10 h-5 bg-background"
+                onMouseMove={e => {
+                    setIsPauseSelected(false);
+                }}
+            >
+            </div>
+
+            <CornButton onClick={onCancelBtnClick}>
+                提交
+            </CornButton>
+        </>
+    )
+
+    // =================
+    // ==== Dialog =====
+    // =================
+
+    const {bodyRef, containerRef} = useDraggableContainer();
+
     return (
         <UserSelectDialogWrapper
             className={clsx("user-select-dialog", props.className)}
@@ -146,50 +192,12 @@ export const UserSelectDialog = memo((
                     </CornDialogHeader>
 
                     <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>
-                        {_DialogBody()}
+                        {_DialogBody}
                     </CornDialogBody>
                 </CornDialogContent>
             </CornDialog>
         </UserSelectDialogWrapper>
     );
-
-    function _DialogBody() {
-        function onCurrElChange(el: HTMLElement) {
-            if (isPauseSelected) {
-                setCurrSelectedEl(el);
-            }
-        }
-
-        return  (
-            <>
-                <CornSelectorDisplayer
-                    ref={selectorDisplayerRef}
-                    currSelectorArr={currSelectorArr}
-                    onCurrElChange={onCurrElChange}
-                />
-
-                <p>
-                    当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
-                </p>
-
-                <p>
-                    划过下方的感应区, 继续进行选择:
-                </p>
-
-                <div
-                    className="w-10 h-5 bg-background"
-                    onMouseMove={e => {
-                        setIsPauseSelected(false);
-                    }}
-                >
-                </div>
-
-                <CornButton onClick={onCancelBtnClick}>
-                    提交
-                </CornButton>
-            </>
-        )
-    }
 });
 
 
