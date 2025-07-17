@@ -2,7 +2,6 @@ import clsx from "clsx";
 import React, { useEffect, useRef } from "react";
 import { memo } from "react";
 import { makeDraggable } from "@/utils/makeDraggable.ts";
-import { AppProps } from "antd";
 
 interface CornAppProps {
     className?: string;
