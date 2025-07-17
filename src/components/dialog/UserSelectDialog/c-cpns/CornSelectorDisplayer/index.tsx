@@ -26,6 +26,7 @@ export const CornSelectorDisplayer = memo((
 
     useEffect(() => {
         setShowIndex(propCurrSelectorArr.length - 1);
+
     }, [propCurrSelectorArr]);
 
     let showList = propCurrSelectorArr.slice(0, showIndex + 1);
@@ -38,6 +39,23 @@ export const CornSelectorDisplayer = memo((
         getSelector
     }), [showList]);
 
+    function onChange(newShowIndex: number) {
+        console.log(newShowIndex);
+
+        setShowIndex(newShowIndex);
+    }
+
+    useEffect(() => {
+        const selector = getSelector();
+
+        if (!selector) return;
+
+        const el = document.querySelector(selector);
+
+        if (!el) return;
+
+        props.onCurrElChange(el as HTMLElement);
+    }, [showIndex]);
 
     return (
         <>
@@ -66,30 +84,6 @@ export const CornSelectorDisplayer = memo((
                 </section>
             }
 
-            <_Slide/>
-        </>
-    )
-
-    function _Slide() {
-        function onChange(newShowIndex: number) {
-            setShowIndex(newShowIndex);
-        }
-
-        useEffect(() => {
-            const selector = getSelector();
-
-            if (!selector) return;
-
-            const el = document.querySelector(selector);
-
-            console.log(el);
-
-            if (!el) return;
-
-            props.onCurrElChange(el as HTMLElement);
-        }, [showIndex]);
-
-        return (
             <input
                 type="range"
                 min="0"
@@ -98,8 +92,8 @@ export const CornSelectorDisplayer = memo((
                 value={showIndex}
                 onChange={e => onChange(Number(e.target.value))}
             />
-        )
-    }
+        </>
+    )
 });
 
 export default CornSelectorDisplayer;
