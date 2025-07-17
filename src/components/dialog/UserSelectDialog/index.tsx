@@ -11,6 +11,7 @@ import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 import {throttle} from "lodash";
 import {useStateRef} from "@/hooks/useStateRef.ts";
 import useCommittedRef from "@/hooks/useCommittedRef.ts";
+import useMemoRef from "@/hooks/useMemoRef.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -61,16 +62,6 @@ export const UserSelectDialog = memo((
         }
     }, [currSelectedEl]);
 
-    const currSelectorArr = useMemo(() => {
-        if (!currSelectedEl) {
-            return [];
-        }
-
-        return getSelector(currSelectedEl).pathArray;
-    }, [currSelectedEl])
-
-    const getCurrSelectorArr = useCommittedRef(currSelectorArr);
-
     // 设置 shadowBox
     useEffect(() => {
         const id = setInterval(() => {
@@ -87,6 +78,14 @@ export const UserSelectDialog = memo((
     }, []);
 
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(false);
+
+    const [currSelectorArr, getCurrSelectorArr] = useMemoRef<string[]>(() => {
+        if (!currSelectedEl) {
+            return [];
+        }
+
+        return getSelector(currSelectedEl).pathArray;
+    }, [currSelectedEl], isPauseSelected, []);
 
     // 实现鼠标移动选中元素
     useWindowEventListener('mousemove', useCallback(throttle((e) => {
