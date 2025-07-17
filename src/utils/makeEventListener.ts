@@ -1,4 +1,4 @@
-type EventHandler<T, K extends keyof DocumentEventMap> = (
+export type EventHandler<T, K extends keyof DocumentEventMap> = (
     this: T,
     ev: DocumentEventMap[K],
 ) => any;

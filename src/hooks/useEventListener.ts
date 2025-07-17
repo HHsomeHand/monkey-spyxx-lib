@@ -1,10 +1,5 @@
 import {RefObject, useEffect, useRef} from "react";
-import makeEventListener from "@/utils/makeEventListener.ts";
-
-type EventHandler<T, K extends keyof DocumentEventMap> = (
-    this: T,
-    ev: DocumentEventMap[K],
-) => any;
+import {makeEventListener, EventHandler} from "@/utils/makeEventListener.ts";
 
 export function useEventListener<
     T extends Element,
@@ -19,7 +14,7 @@ export function useEventListener<
         if (!target.current) return;
 
         return makeEventListener(event, listener, target.current, options);
-    }, [target.current]);
+    }, [target.current, listener]);
 }
 
 export default useEventListener;

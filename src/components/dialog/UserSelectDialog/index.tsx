@@ -1,6 +1,6 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {memo} from "react";
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
@@ -13,11 +13,13 @@ import {getSelector} from "@/utils/getSelector.ts";
 import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
 import useEventListener from "@/hooks/useEventListener.ts";
 import {useStateRef} from "@/hooks/useStateRef.ts";
+import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 
-interface UserSelectDialogProps {
+export interface UserSelectDialogProps {
     className?: string,
     title?: string,
     onResult?: (selector: string) => void;
+    onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
 }
 
 export const UserSelectDialog = memo((
@@ -30,8 +32,6 @@ export const UserSelectDialog = memo((
     const {bodyRef, containerRef} = useDraggableContainer();
 
     const [currSelector, setCurrSelector, currSelectorRef] = useStateRef("");
-
-    const [isShowDialog, setIsShowDialog] = useState(true);
 
     const setPauseSelectRef = useRef<(isCancel: boolean) => void>();
 
@@ -121,13 +121,11 @@ export const UserSelectDialog = memo((
         return cancelFnArr.getDoCancelFn();
     }, []);
 
-    const cancelBtnRef = useRef<HTMLButtonElement>(null);
-
-    useEventListener(cancelBtnRef, "click", () => {
+    const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
         props.onResult?.(currSelectorRef.current);
 
-        console.log("click ");
-    });
+        props.onIsShowDialogChange?.(false);
+    }, []);
 
     function _DialogBody() {
         return  (
@@ -150,12 +148,14 @@ export const UserSelectDialog = memo((
                 >
                 </div>
 
-                <button ref={cancelBtnRef}>提交</button>
+                <CornButton onClick={onCancelBtnClick}>
+                    提交
+                </CornButton>
             </>
         )
     }
 
-    return isShowDialog && (
+    return (
         <UserSelectDialogWrapper
             className={clsx("user-select-dialog", props.className)}
         >
@@ -173,7 +173,6 @@ export const UserSelectDialog = memo((
         </UserSelectDialogWrapper>
     );
 });
-
 
 
 export default UserSelectDialog;

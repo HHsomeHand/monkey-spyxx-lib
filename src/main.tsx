@@ -5,6 +5,7 @@ import { ISpyXX } from "@/types";
 import "@/assets/css/global.css";
 import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
+import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController.tsx";
 
 function renderDialog(dialog: React.ReactNode) {
     return ReactDOM.createRoot(
@@ -25,7 +26,7 @@ const spyXX: ISpyXX = {
 
             renderDialog(
                 <CornApp>
-                    <UserSelectDialog title="请将光标放在目标元素上:" onResult={onResult} />
+                    <UserSelectDialogController title="请将光标放在目标元素上:" onResult={onResult} />
                 </CornApp>,
             );
         });
