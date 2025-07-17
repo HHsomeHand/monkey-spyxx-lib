@@ -83,11 +83,11 @@ export const UserSelectDialog = memo((
         }
     }, []);
 
-    const isPauseSelectedRef = useRef(false);
+    const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(false);
 
     // 实现鼠标移动选中元素
     useEventListener(window, 'mousemove', useCallback(throttle((e) => {
-        if (isPauseSelectedRef.current) {
+        if (getIsPauseSelected()) {
             return;
         }
 
@@ -102,14 +102,12 @@ export const UserSelectDialog = memo((
 
     // 实现点击暂停监听
     useEventListener(window, 'click', useCallback((e) => {
-        if (!isPauseSelectedRef.current) {
+        if (!getIsPauseSelected()) {
             e.stopPropagation();
             e.preventDefault();
-
-            console.log("尝试失效");
         }
 
-        isPauseSelectedRef.current = true;
+        setIsPauseSelected(true);
     }, []), true);
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
@@ -142,13 +140,17 @@ export const UserSelectDialog = memo((
                 <_SelectorDisplayer/>
 
                 <p>
+                    当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
+                </p>
+
+                <p>
                     划过下方的感应区, 继续进行选择:
                 </p>
 
                 <div
                     className="w-10 h-5 bg-background"
                     onMouseMove={e => {
-                        isPauseSelectedRef.current = false;
+                        setIsPauseSelected(false);
                     }}
                 >
                 </div>

@@ -10,6 +10,8 @@ export function useStateRef<T>(initValue: T): [T, React.Dispatch<React.SetStateA
         ref.current = value;
     }, [value]);
 
+    // 不直接返回 ref, 是因为要保证 ref 为只读
+    // 如果返回 ref, 修改 ref, 无法修改 state, 会割裂
     const getRefCurrent = useCallback(() => {
         return ref.current;
     }, []);
