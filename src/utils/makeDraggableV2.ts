@@ -33,8 +33,8 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
     const cancelMouseDown = makeEventListener(
         "mousedown",
         (event) => {
-            event.stopPropagation();
-            event.preventDefault();
+            // event.stopPropagation();
+            // event.preventDefault();
 
             isDragging = true;
 
@@ -48,11 +48,11 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
     );
     cancelCallbackArr.push(cancelMouseDown);
 
-    Ele.onclick = (event) => event.stopPropagation();
+    // Ele.onclick = (event) => event.stopPropagation();
 
     const cancelMouseUp = makeEventListener("mouseup", (event) => {
-        event.stopPropagation();
-        event.preventDefault();
+        // event.stopPropagation();
+        // event.preventDefault();
         isDragging = false;
 
         Ele.style.cursor = "grab";
@@ -61,8 +61,8 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
     cancelCallbackArr.push(cancelMouseUp);
 
     const cancelMouseMove = makeEventListener("mousemove", (event) => {
-        event.stopPropagation();
-        event.preventDefault();
+        // event.stopPropagation();
+        // event.preventDefault();
         if (!isDragging) return;
 
         const dx = event.clientX - startX;

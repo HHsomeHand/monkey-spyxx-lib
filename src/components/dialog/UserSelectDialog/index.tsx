@@ -154,9 +154,19 @@ export const UserSelectDialog = memo((
     );
 
     function _DialogBody() {
+        function onCurrElChange(el: HTMLElement) {
+            if (isPauseSelected) {
+                setCurrSelectedEl(el);
+            }
+        }
+
         return  (
             <>
-                <CornSelectorDisplayer ref={selectorDisplayerRef} currSelectorArr={currSelectorArr}/>
+                <CornSelectorDisplayer
+                    ref={selectorDisplayerRef}
+                    currSelectorArr={currSelectorArr}
+                    onCurrElChange={onCurrElChange}
+                />
 
                 <p>
                     当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}

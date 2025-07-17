@@ -10,6 +10,7 @@ export interface CornSelectorDisplayerRef {
 interface CornSelectorDisplayerProps {
     className?: string,
     currSelectorArr: string[],
+    onCurrElChange: (el: HTMLElement) => void,
     ref: React.MutableRefObject<CornSelectorDisplayerRef | undefined>
 }
 
@@ -21,22 +22,20 @@ export const CornSelectorDisplayer = memo((
         ref
     } = props;
 
-    const [showIndex, setShowIndex] = useState(-1);
+    const [showIndex, setShowIndex] = useState(propCurrSelectorArr.length - 1);
 
-    let showLength = propCurrSelectorArr.length;
+    useEffect(() => {
+        setShowIndex(propCurrSelectorArr.length - 1);
+    }, [propCurrSelectorArr]);
 
-    let showList = propCurrSelectorArr;
+    let showList = propCurrSelectorArr.slice(0, showIndex + 1);
 
-    if (showIndex !== -1) {
-        showList = propCurrSelectorArr.slice(0, showIndex + 1);
-
-        showLength = showIndex + 1;
+    function getSelector() {
+        return showList.join(" > ");
     }
 
     useImperativeHandle(ref, () => ({
-        getSelector() {
-            return showList.join(" > ");
-        }
+        getSelector
     }), [showList]);
 
 
@@ -56,7 +55,7 @@ export const CornSelectorDisplayer = memo((
                                 <React.Fragment key={selector}>
                                     <CornButton onClick={onSelectorClick}>{selector}</CornButton>
                                     {
-                                        index < showLength - 1 && (
+                                        index < showIndex && (
                                             <div className="mx-1">&gt;</div>
                                         )
                                     }
@@ -66,8 +65,41 @@ export const CornSelectorDisplayer = memo((
                     }
                 </section>
             }
+
+            <_Slide/>
         </>
     )
+
+    function _Slide() {
+        function onChange(newShowIndex: number) {
+            setShowIndex(newShowIndex);
+        }
+
+        useEffect(() => {
+            const selector = getSelector();
+
+            if (!selector) return;
+
+            const el = document.querySelector(selector);
+
+            console.log(el);
+
+            if (!el) return;
+
+            props.onCurrElChange(el as HTMLElement);
+        }, [showIndex]);
+
+        return (
+            <input
+                type="range"
+                min="0"
+                max={propCurrSelectorArr.length - 1}
+                step="1"
+                value={showIndex}
+                onChange={e => onChange(Number(e.target.value))}
+            />
+        )
+    }
 });
 
 export default CornSelectorDisplayer;
