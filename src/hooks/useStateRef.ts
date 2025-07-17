@@ -1,7 +1,7 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 
-export function useStateRef<T>(initValue: T): [T, React.Dispatch<React.SetStateAction<T>>, React.MutableRefObject<T>] {
+export function useStateRef<T>(initValue: T): [T, React.Dispatch<React.SetStateAction<T>>, () => T] {
     const [value, setValue] = useState<T>(initValue);
 
     const ref = useRef(initValue);
@@ -10,5 +10,9 @@ export function useStateRef<T>(initValue: T): [T, React.Dispatch<React.SetStateA
         ref.current = value;
     }, [value]);
 
-    return [value, setValue, ref];
+    const getRefCurrent = useCallback(() => {
+        return ref.current;
+    }, []);
+
+    return [value, setValue, getRefCurrent];
 }

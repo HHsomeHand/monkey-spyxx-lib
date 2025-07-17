@@ -27,7 +27,7 @@ export const UserSelectDialog = memo((
 
     const {bodyRef, containerRef} = useDraggableContainer();
 
-    const [currSelectedEl, private_setCurrSelectedEl, currSelectedElRef] = useStateRef<HTMLElement | null>(null);
+    const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
 
     function setCurrSelectedEl(el: HTMLElement) {
         if (currSelectedEl === el) {
@@ -71,10 +71,11 @@ export const UserSelectDialog = memo((
     // 设置 shadowBox
     useEffect(() => {
         const id = setInterval(() => {
-            if (!currSelectedElRef.current) return;
+            const l_currSelectedEl = getCurrSelectedEl();
+            if (!l_currSelectedEl) return;
 
             /* x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
-            currSelectedElRef.current.style.boxShadow = "0px 0px 0px 2px red"
+            l_currSelectedEl.style.boxShadow = "0px 0px 0px 2px red"
         }, 100);
 
         return () => {
@@ -101,8 +102,15 @@ export const UserSelectDialog = memo((
 
     // 实现点击暂停监听
     useEventListener(window, 'click', useCallback((e) => {
+        if (!isPauseSelectedRef.current) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            console.log("尝试失效");
+        }
+
         isPauseSelectedRef.current = true;
-    }, []));
+    }, []), true);
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
         props.onResult?.(currSelectorArr.join(" > "));
