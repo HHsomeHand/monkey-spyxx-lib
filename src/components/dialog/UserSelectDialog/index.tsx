@@ -6,10 +6,11 @@ import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
 import {getSelector} from "@/utils/getSelector.ts";
 import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
-import useEventListener from "@/hooks/useEventListener.ts";
+import useWindowEventListener from "@/hooks/useWindowEventListener.ts";
 import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 import {throttle} from "lodash";
 import {useStateRef} from "@/hooks/useStateRef.ts";
+import useCommittedRef from "@/hooks/useCommittedRef.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -68,6 +69,8 @@ export const UserSelectDialog = memo((
         return getSelector(currSelectedEl).pathArray;
     }, [currSelectedEl])
 
+    const getCurrSelectorArr = useCommittedRef(currSelectorArr);
+
     // 设置 shadowBox
     useEffect(() => {
         const id = setInterval(() => {
@@ -86,7 +89,7 @@ export const UserSelectDialog = memo((
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(false);
 
     // 实现鼠标移动选中元素
-    useEventListener(window, 'mousemove', useCallback(throttle((e) => {
+    useWindowEventListener('mousemove', useCallback(throttle((e) => {
         if (getIsPauseSelected()) {
             return;
         }
@@ -101,7 +104,7 @@ export const UserSelectDialog = memo((
     }, 100), []));
 
     // 实现点击暂停监听
-    useEventListener(window, 'click', useCallback((e) => {
+    useWindowEventListener('click', useCallback((e) => {
         if (!getIsPauseSelected()) {
             e.stopPropagation();
             e.preventDefault();
@@ -111,7 +114,7 @@ export const UserSelectDialog = memo((
     }, []), true);
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
-        props.onResult?.(currSelectorArr.join(" > "));
+        props.onResult?.(getCurrSelectorArr().join(" > "));
 
         props.onIsShowDialogChange?.(false);
     }, []);
@@ -183,6 +186,8 @@ export const UserSelectDialog = memo((
                             showList.map((selector, index) => {
                                 function onSelectorClick() {
                                     setShowIndex(index);
+
+                                    console.log("switch")
                                 }
 
                                 return (

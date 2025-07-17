@@ -1,7 +1,8 @@
 import React, {useRef} from "react";
 import clsx from "clsx";
-import useEventListener from "@/hooks/useEventListener.ts";
+import useWindowEventListener from "@/hooks/useWindowEventListener.ts";
 import {EventHandler} from "@/utils/makeEventListener.ts";
+import useRefEventListener from "@/hooks/useRefEventListener.ts";
 
 export type OnBtnClickFnTYpe =  EventHandler<HTMLButtonElement, 'click'>;
 
@@ -15,7 +16,7 @@ export function CornButton({
 }) {
     const btnRef = useRef<HTMLButtonElement>(null);
 
-    useEventListener(btnRef.current, "click", onClick);
+    useRefEventListener(btnRef, "click", onClick);
 
     return (
         <button
