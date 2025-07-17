@@ -11,6 +11,8 @@ import makeEventListener from "@/utils/makeEventListener.ts";
 import {makeDraggableInContainer} from "@/utils/makeDraggableInContainer.ts";
 import {getSelector} from "@/utils/getSelector.ts";
 import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
+import useEventListener from "@/hooks/useEventListener.ts";
+import {useStateRef} from "@/hooks/useStateRef.ts";
 
 interface UserSelectDialogProps {
     className?: string,
@@ -27,7 +29,9 @@ export const UserSelectDialog = memo((
 
     const {bodyRef, containerRef} = useDraggableContainer();
 
-    const [currSelector, setCurrSelector] = useState("");
+    const [currSelector, setCurrSelector, currSelectorRef] = useStateRef("");
+
+    const [isShowDialog, setIsShowDialog] = useState(true);
 
     const setPauseSelectRef = useRef<(isCancel: boolean) => void>();
 
@@ -117,6 +121,14 @@ export const UserSelectDialog = memo((
         return cancelFnArr.getDoCancelFn();
     }, []);
 
+    const cancelBtnRef = useRef<HTMLButtonElement>(null);
+
+    useEventListener(cancelBtnRef, "click", () => {
+        props.onResult?.(currSelectorRef.current);
+
+        console.log("click ");
+    });
+
     function _DialogBody() {
         return  (
             <>
@@ -136,14 +148,14 @@ export const UserSelectDialog = memo((
                         setPauseSelectRef.current?.(false);
                     }}
                 >
-
                 </div>
+
+                <button ref={cancelBtnRef}>提交</button>
             </>
         )
     }
 
-
-    return (
+    return isShowDialog && (
         <UserSelectDialogWrapper
             className={clsx("user-select-dialog", props.className)}
         >

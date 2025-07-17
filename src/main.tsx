@@ -25,7 +25,6 @@ const spyXX: ISpyXX = {
 
             renderDialog(
                 <CornApp>
-
                     <UserSelectDialog title="请将光标放在目标元素上:" onResult={onResult} />
                 </CornApp>,
             );
