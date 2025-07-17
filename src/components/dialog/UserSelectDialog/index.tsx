@@ -31,13 +31,16 @@ export const UserSelectDialog = memo((
 
     const {bodyRef, containerRef} = useDraggableContainer();
 
-    const [currSelector, setCurrSelector, currSelectorRef] = useStateRef("");
+    const [currSelector, setCurrSelector, currSelectorRef] = useStateRef<string[]>([]);
 
+    // 调用这个 ref.current 可以设置是否停止选择
     const setPauseSelectRef = useRef<(isCancel: boolean) => void>();
 
+    // 实现选择元素
     useEffect(() => {
         const cancelFnArr = new CancelFnArr();
 
+        // setCurrEl 会标注当前元素的阴影
         const {setCurrEl, setPauseSelect} = (() => {
             let currEl: HTMLElement | null = null;
 
@@ -77,7 +80,7 @@ export const UserSelectDialog = memo((
 
                 tmpBoxShadow = currEl.style.boxShadow;
 
-                setCurrSelector(getSelector(currEl).selector);
+                setCurrSelector(getSelector(currEl).pathArray);
             }
 
             cancelFnArr.push(() => {
@@ -98,6 +101,7 @@ export const UserSelectDialog = memo((
 
         setPauseSelectRef.current = setPauseSelect;
 
+        // 监听 window mousemove 并 setCurrEl
         {
             const cancel = makeEventListener("mousemove", (e) => {
                 const targetEl = document.elementFromPoint(e.clientX, e.clientY);
@@ -112,6 +116,7 @@ export const UserSelectDialog = memo((
             cancelFnArr.push(cancel);
         }
 
+        // 实现点击暂停监听
         {
             const cancel = makeEventListener("click", (e) => {
                 setPauseSelect(true);
@@ -122,19 +127,34 @@ export const UserSelectDialog = memo((
     }, []);
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
-        props.onResult?.(currSelectorRef.current);
+        props.onResult?.(currSelectorRef.current.join(" > "));
 
         props.onIsShowDialogChange?.(false);
     }, []);
 
+
+    return (
+        <UserSelectDialogWrapper
+            className={clsx("user-select-dialog", props.className)}
+        >
+            <CornDialog ref={containerRef}>
+                <CornDialogContent>
+                    <CornDialogHeader>
+                        {propTitle}
+                    </CornDialogHeader>
+
+                    <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>
+                        {_DialogBody()}
+                    </CornDialogBody>
+                </CornDialogContent>
+            </CornDialog>
+        </UserSelectDialogWrapper>
+    );
+
     function _DialogBody() {
         return  (
             <>
-                {
-                    currSelector !== "" && <p>
-                        {currSelector}
-                    </p>
-                }
+                <_SelectorDisplayer/>
 
                 <p>
                     划过下方的感应区, 继续进行选择:
@@ -155,23 +175,46 @@ export const UserSelectDialog = memo((
         )
     }
 
-    return (
-        <UserSelectDialogWrapper
-            className={clsx("user-select-dialog", props.className)}
-        >
-            <CornDialog ref={containerRef}>
-                <CornDialogContent>
-                    <CornDialogHeader>
-                        {propTitle}
-                    </CornDialogHeader>
+    function _SelectorDisplayer() {
+        const [showIndex, setShowIndex] = useState(-1);
 
-                    <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>
-                        {_DialogBody()}
-                    </CornDialogBody>
-                </CornDialogContent>
-            </CornDialog>
-        </UserSelectDialogWrapper>
-    );
+        let showLength = currSelector.length;
+
+        let showList = currSelector;
+
+        if (showIndex !== -1) {
+            showList = currSelector.slice(0, showIndex + 1);
+
+            showLength = showIndex + 1;
+        }
+
+        return (
+            <>
+                {
+                    currSelector.length !== 0 && <section className="flex flex-wrap">
+                        {
+                            showList.map((selector, index) => {
+                                function onSelectorClick() {
+                                    setShowIndex(index);
+                                }
+
+                                return (
+                                    <React.Fragment key={selector}>
+                                        <CornButton onClick={onSelectorClick}>{selector}</CornButton>
+                                        {
+                                            index < showLength - 1 && (
+                                                <div className="mx-1">&gt;</div>
+                                            )
+                                        }
+                                    </React.Fragment>
+                                )
+                            })
+                        }
+                    </section>
+                }
+            </>
+        )
+    }
 });
 
 
