@@ -1,18 +1,24 @@
 import clsx from 'clsx';
-import React, {useState} from 'react';
+import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {memo} from "react";
 import {CornButton} from "@/components/ui/button-base.tsx";
+
+export interface CornSelectorDisplayerRef {
+    getSelector(): string;
+}
 
 interface CornSelectorDisplayerProps {
     className?: string,
     currSelectorArr: string[],
+    ref: React.MutableRefObject<CornSelectorDisplayerRef | undefined>
 }
 
 export const CornSelectorDisplayer = memo((
     props: CornSelectorDisplayerProps
 ) => {
     let {
-        currSelectorArr: propCurrSelectorArr
+        currSelectorArr: propCurrSelectorArr,
+        ref
     } = props;
 
     const [showIndex, setShowIndex] = useState(-1);
@@ -26,6 +32,12 @@ export const CornSelectorDisplayer = memo((
 
         showLength = showIndex + 1;
     }
+
+    useImperativeHandle(ref, () => ({
+        getSelector() {
+            return showList.join(" > ");
+        }
+    }), [showList]);
 
 
     return (

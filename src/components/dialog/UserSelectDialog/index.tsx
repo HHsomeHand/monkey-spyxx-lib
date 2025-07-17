@@ -12,7 +12,9 @@ import {throttle} from "lodash";
 import {useStateRef} from "@/hooks/useStateRef.ts";
 import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
-import CornSelectorDisplayer from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
+import CornSelectorDisplayer, {
+    CornSelectorDisplayerRef
+} from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -121,8 +123,14 @@ export const UserSelectDialog = memo((
         setIsPauseSelected(true);
     }, []), true);
 
+    const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
+
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
-        props.onResult?.(getCurrSelectorArr().join(" > "));
+        console.log(selectorDisplayerRef.current!.getSelector());
+        if (!selectorDisplayerRef.current) {
+            // @ts-ignore
+            props.onResult?.(selectorDisplayerRef.current?.getSelector());
+        }
 
         props.onIsShowDialogChange?.(false);
     }, []);
@@ -148,7 +156,7 @@ export const UserSelectDialog = memo((
     function _DialogBody() {
         return  (
             <>
-                <CornSelectorDisplayer currSelectorArr={currSelectorArr}/>
+                <CornSelectorDisplayer ref={selectorDisplayerRef} currSelectorArr={currSelectorArr}/>
 
                 <p>
                     当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
