@@ -19,7 +19,7 @@ export const ShowToast = memo((
 
     const [isShowToast, setIsShowToast] = useState(false);
 
-    const durationRef = useRef(300);
+    const durationRef = useRef(1000);
 
     useEffect(() => {
         if (toastMsg !== "") {
@@ -62,7 +62,7 @@ export const ShowToast = memo((
                 unmountOnExit // 退出时卸载组件
                 appear={true}
             >
-                <div ref={toastRef} className="bg-amber-400 p-3 fixed corn-center z-9999">{toastMsg}</div>
+                <div ref={toastRef} className="bg-white border-border border-1 shadow-md rounded-lg p-3 fixed corn-center z-9999">{toastMsg}</div>
             </CSSTransition>
         </ShowToastWrapper>
     );
