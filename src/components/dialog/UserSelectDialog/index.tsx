@@ -36,6 +36,7 @@ export const UserSelectDialog = memo((
         initSelector: contextInitSelector = "",
         isShowPauseState: contextIsShowPauseState = true, // 默认显示是否暂停
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
+        isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
     } = useContext(ParamOptionContext);
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
@@ -75,6 +76,8 @@ export const UserSelectDialog = memo((
 
     // 实现 shadowBox 的保存与恢复
     useEffect(() => {
+        if (!contextIsUseShadow) return;
+
         if (!currSelectedEl) return;
 
         const savedPreEl = currSelectedEl;
@@ -92,6 +95,8 @@ export const UserSelectDialog = memo((
 
     // 设置 shadowBox
     useEffect(() => {
+        if (!contextIsUseShadow) return;
+
         const id = setInterval(() => {
             const l_currSelectedEl = getCurrSelectedEl();
             if (!l_currSelectedEl) return;
@@ -104,6 +109,44 @@ export const UserSelectDialog = memo((
             clearInterval(id);
         }
     }, []);
+
+    const telescopeElRef = useRef<HTMLDivElement>();
+
+    useEffect(() => {
+        if (contextIsUseShadow) return;
+
+        telescopeElRef.current = document.createElement('div');
+
+        telescopeElRef.current.className = "bg-blue-300 opacity-25 fixed transition-all z-99 pointer-events-none"
+
+        document.querySelector('.corn-app')?.appendChild(telescopeElRef.current);
+
+        return () => {
+            telescopeElRef.current?.remove();
+        }
+    }, []);
+
+    // 实现小方块的圆角大小的保存和恢复
+    useEffect(() => {
+        if (contextIsUseShadow) return;
+
+        if (!currSelectedEl) return;
+
+
+        const telescopeEl = telescopeElRef.current;
+
+        if (!telescopeEl) return;
+
+        const rect = currSelectedEl.getBoundingClientRect();
+
+        telescopeEl.style.top = `${rect.top}px`;
+
+        telescopeEl.style.left = `${rect.left}px`;
+
+        telescopeEl.style.width = `${rect.width}px`;
+
+        telescopeEl.style.height = `${rect.height}px`;
+    }, [currSelectedEl]);
 
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(contextInitPauseState);
 

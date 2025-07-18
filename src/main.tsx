@@ -84,5 +84,5 @@ if (import.meta.env.MODE === "development") {
         console.log(document.querySelector(parentSelector));
     }
 
-    testSelectParent();
+    testSelectToRemove();
 }
