@@ -5,66 +5,66 @@ export function getSelector(element: Element) {
     while (current !== null && current !== document.documentElement) {
         let selector = current.tagName.toLowerCase();
 
-        let isHTMLElement = current instanceof HTMLElement;
-
         if (current.id) {
-            path.unshift(`#${current.id}`);
+            selector += `#${current.id}`;
+        } else {
+            let isHTMLElement = current instanceof HTMLElement;
 
-            break;
-        }
+            let isElHasClassName = false;
 
-        let isElHasClassName = false;
+            if (isHTMLElement && current.className) {
+                const classes = String(current.className).split(' ').filter(c => c).join('.');
 
-        if (current.className && isHTMLElement) {
-            const classes = String(current.className).split(' ').filter(c => c).join('.');
-
-            if (classes) {
-                selector += `.${classes}`;
-            }
-
-            isElHasClassName = true;
-        }
-
-        const siblings = Array.from(current.parentElement!.children).filter(
-            sibling => {
-                let isSameTag = sibling.tagName === current!.tagName;
-
-                let isSameClassName = true;
-
-                if (isElHasClassName && isHTMLElement) {
-                    isSameClassName = hasSameClasses(sibling, current!);
+                if (classes) {
+                    selector += `.${classes}`;
                 }
-                return isSameTag && isSameClassName;
-            }
-        );
 
-        function hasSameClasses(element1: Element, element2: Element): boolean {
-            // 将第一个元素的类名存入 Set
-            const classes1 = new Set(element1.classList);
-
-            // 将第二个元素的类名存入 Set
-            const classes2 = new Set(element2.classList);
-
-            // 检查两个 Set 的大小是否相同
-            if (classes1.size !== classes2.size) {
-                return false;
+                isElHasClassName = true;
             }
 
-            // 检查每个类名是否同时存在于两个 Set 中
-            for (const className of classes1) {
-                if (!classes2.has(className)) {
+            const siblings = Array.from(current.parentElement!.children).filter(
+                sibling => {
+                    let isSameTag = sibling.tagName === current!.tagName;
+
+                    if (!isElHasClassName) {
+                        // 没有类名的情况
+                        return isSameTag;
+                    }
+
+                    let isSameClassName = hasSameClasses(sibling, current!);;
+
+                    return isSameTag && isSameClassName;
+                }
+            );
+
+            function hasSameClasses(element1: Element, element2: Element): boolean {
+                // 将第一个元素的类名存入 Set
+                const classes1 = new Set(element1.classList);
+
+                // 将第二个元素的类名存入 Set
+                const classes2 = new Set(element2.classList);
+
+                // 检查两个 Set 的大小是否相同
+                if (classes1.size !== classes2.size) {
                     return false;
                 }
+
+                // 检查每个类名是否同时存在于两个 Set 中
+                for (const className of classes1) {
+                    if (!classes2.has(className)) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
-            return true;
-        }
+            if (siblings.length > 1) {
+                const index = siblings.indexOf(current) + 1;
 
-        if (siblings.length > 1) {
-            const index = siblings.indexOf(current) + 1;
-
-            if (index !== 1) {
-                selector += `:nth-child(${index})`;
+                if (index !== 1) {
+                    selector += `:nth-child(${index})`;
+                }
             }
         }
 
