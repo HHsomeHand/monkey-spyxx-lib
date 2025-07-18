@@ -8,23 +8,28 @@ import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogCo
 import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
 
 function renderDialog(dialog: React.ReactNode) {
-    return ReactDOM.createRoot(
-        (() => {
-            const app = document.createElement("div");
-            document.body.append(app);
-            return app;
-        })(),
+    const app = document.createElement("div");
+    document.body.append(app);
+
+    ReactDOM.createRoot(
+        app
     ).render(dialog);
+
+    return () => {
+        app.remove();
+    };
 }
 
 const spyXX: ISpyXX = {
     async getSelector(options: SpyXXGetSelectorOptionsType = {}) {
         return new Promise((resolve) => {
             function onResult(result: string) {
+                clearFn();
+
                 resolve(result);
             }
 
-            renderDialog(
+            const clearFn = renderDialog(
                 <CornApp paramOptions={options}>
                     <UserSelectDialogController onResult={onResult} />
                 </CornApp>,
