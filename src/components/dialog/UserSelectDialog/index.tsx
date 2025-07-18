@@ -129,11 +129,12 @@ export const UserSelectDialog = memo((
     const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
 
     const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
-        console.log(selectorDisplayerRef.current!.getSelector());
         if (!selectorDisplayerRef.current) {
-            // @ts-ignore
-            props.onResult?.(selectorDisplayerRef.current?.getSelector());
+            console.log("spyxx 出错, selectorDisplayerRef.current 竟然为 null, 不可能存在这种离谱的情况")
+            return;
         }
+
+        props.onResult?.(selectorDisplayerRef.current.getSelector());
 
         props.onIsShowDialogChange?.(false);
     }, []);
