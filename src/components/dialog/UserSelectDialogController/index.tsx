@@ -10,10 +10,6 @@ export const UserSelectDialogController = memo((
 
     const dialogRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        console.log(dialogRef.current)
-    }, []);
-
     //  react-transition-group 不兼容 React19
     //  https://github.com/reactjs/react-transition-group/issues/918
     return (

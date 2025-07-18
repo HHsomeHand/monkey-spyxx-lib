@@ -16,6 +16,7 @@ import CornSelectorDisplayer, {
     CornSelectorDisplayerRef
 } from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
 import mergeRefs from "@/utils/mergeRefs.ts";
+import cornMitt from "@/eventBus";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -83,6 +84,12 @@ export const UserSelectDialog = memo((
     }, []);
 
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(false);
+
+    useEffect(() => {
+        cornMitt.emit('showToast', {
+            msg: isPauseSelected ? "光标选择元素暂停" : "光标选择元素开始",
+        })
+    }, [isPauseSelected]);
 
     const [currSelectorArr, getCurrSelectorArr] = useMemoRef<string[]>(() => {
         if (!currSelectedEl) {

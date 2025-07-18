@@ -70,36 +70,36 @@ export const CornSelectorDisplayer = memo((
         />
     );
 
-    return (
+    const jsx = showList.length !== 0 && (
         <>
-            {
-                showList.length !== 0 && <section className="flex flex-wrap overflow-y-auto h-15 items-center">
-                    {
-                        showList.map((selector, index) => {
-                            function onSelectorClick() {
-                                if (index === 0) return;
+            <section className="flex flex-wrap overflow-y-auto h-15 items-center">
+                {
+                    showList.map((selector, index) => {
+                        function onSelectorClick() {
+                            if (index === 0) return;
 
-                                setShowIndex(index);
-                            }
+                            setShowIndex(index);
+                        }
 
-                            return (
-                                <React.Fragment key={selector + index}>
-                                    <CornButton onClick={onSelectorClick}>{selector}</CornButton>
-                                    {
-                                        index < showIndex && (
-                                            <div className="mx-1">&gt;</div>
-                                        )
-                                    }
-                                </React.Fragment>
-                            )
-                        })
-                    }
-                </section>
-            }
+                        return (
+                            <React.Fragment key={selector + index}>
+                                <CornButton onClick={onSelectorClick}>{selector}</CornButton>
+                                {
+                                    index < showIndex && (
+                                        <div className="mx-1">&gt;</div>
+                                    )
+                                }
+                            </React.Fragment>
+                        )
+                    })
+                }
+            </section>
 
             {_Slider}
         </>
     )
+
+    return jsx;
 });
 
 export default CornSelectorDisplayer;
