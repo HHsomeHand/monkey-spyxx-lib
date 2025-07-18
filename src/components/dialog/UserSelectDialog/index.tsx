@@ -268,9 +268,18 @@ export const UserSelectDialog = memo((
                 )
             }
 
-            <CornButton data-slot="submit-btn" onClick={onSubmitBtnClick}>
+            <CornButton className="border-2! border-neutral-200!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
                 提交
             </CornButton>
+
+            <a
+                className="text-sm text-neutral-600! opacity-55 whitespace-nowrap absolute bottom-[-22px] left-[50%] translate-x-[-50%]"
+                href="https://bbs.tampermonkey.net.cn/"
+                target="_blank"
+            >
+                油猴中文网: https://bbs.tampermonkey.net.cn/
+            </a>
+
         </>
     )
 
@@ -295,7 +304,7 @@ export const UserSelectDialog = memo((
                         {contextTitle}
                     </CornDialogHeader>
 
-                    <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>
+                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={bodyRef}>
                         {_DialogBody}
                     </CornDialogBody>
                 </CornDialogContent>
