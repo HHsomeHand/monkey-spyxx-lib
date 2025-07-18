@@ -39,12 +39,14 @@ export const CornSelectorDisplayer = memo((
         getSelector
     }), [showList]);
 
+    // =================
+    // ==== _Slider ====
+    // =================
     function onChange(newShowIndex: number) {
-        console.log(newShowIndex);
-
         setShowIndex(newShowIndex);
     }
 
+    // 滑块滑动时, 重新让父元素高亮目标元素
     useEffect(() => {
         const selector = getSelector();
 
@@ -56,6 +58,17 @@ export const CornSelectorDisplayer = memo((
 
         props.onCurrElChange(el as HTMLElement);
     }, [showIndex]);
+
+    const _Slider = (
+        <input
+            type="range"
+            min="0"
+            max={propCurrSelectorArr.length - 1}
+            step="1"
+            value={showIndex}
+            onChange={e => onChange(Number(e.target.value))}
+        />
+    );
 
     return (
         <>
@@ -84,14 +97,7 @@ export const CornSelectorDisplayer = memo((
                 </section>
             }
 
-            <input
-                type="range"
-                min="0"
-                max={propCurrSelectorArr.length - 1}
-                step="1"
-                value={showIndex}
-                onChange={e => onChange(Number(e.target.value))}
-            />
+            {_Slider}
         </>
     )
 });
