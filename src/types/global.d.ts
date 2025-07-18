@@ -25,6 +25,8 @@ export interface SpyXXGetSelectorOptionsType {
     isUseShadow?: boolean;
 
     onCurrSelectElChange?: ((el: HTMLElement) => (() => void));
+
+    excludeSelectors?: string[];
 }
 
 export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">

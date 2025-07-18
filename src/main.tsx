@@ -90,9 +90,12 @@ if (import.meta.env.MODE === "development") {
     }
 
     async function testAdBlock() {
-        const selector = await window.spyXX.getSelector();
+        const selector = await window.spyXX.getSelector({
+            excludeSelectors: ["body"],
+        });
 
         let targetSelector = await window.spyXX.getParent(selector, {
+            excludeSelectors: ["body"],
             title: "现在看起来怎么样?",
             submitBtnText: "看起来不错",
             onCurrSelectElChange(el) {

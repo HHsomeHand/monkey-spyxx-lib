@@ -1,8 +1,24 @@
-export function getSelector(element: Element) {
+export function getSelector(
+    element: Element,
+    excludeSelectors: string[] = []
+) {
     const path = [];
     let current: Element | null = element;
 
     while (current !== null && current !== document.documentElement) {
+        let isContinue = false;
+
+        for (const excludeSelector of excludeSelectors) {
+            if (current.matches(excludeSelector)) {
+                isContinue = true;
+            }
+        }
+
+        if (isContinue) {
+            current = current.parentElement;
+            continue;
+        }
+
         let selector = current.tagName.toLowerCase();
 
         if (current.id) {

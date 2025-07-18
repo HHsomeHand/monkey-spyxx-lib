@@ -38,7 +38,8 @@ export const UserSelectDialog = memo((
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
         isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
         onCurrSelectElChange: contextOnCurrSelectChange = () => {return () => {}},
-        submitBtnText: contextSubmitBtnText = "提交"
+        submitBtnText: contextSubmitBtnText = "提交",
+        excludeSelectors: contextExcludeSelectors = []
     } = useContext(ParamOptionContext);
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
@@ -51,6 +52,12 @@ export const UserSelectDialog = memo((
 
         if (el.matches(".corn-app *, .corn-app")) {
             return;
+        }
+
+        for (const excludeSelector of contextExcludeSelectors) {
+            if (el.matches(excludeSelector)) {
+                return;
+            }
         }
 
         private_setCurrSelectedEl(el);
@@ -120,6 +127,7 @@ export const UserSelectDialog = memo((
 
     const telescopeElRef = useRef<HTMLDivElement>();
 
+    // 创建 telescopeElRef
     useEffect(() => {
         if (contextIsUseShadow) return;
 
@@ -177,7 +185,7 @@ export const UserSelectDialog = memo((
             return [];
         }
 
-        return getSelector(currSelectedEl).pathArray;
+        return getSelector(currSelectedEl, contextExcludeSelectors).pathArray;
     }, [currSelectedEl], (arr) => (arr.length > 0) && isPauseSelected, []);
 
     // 实现鼠标移动选中元素
