@@ -116,5 +116,37 @@ if (import.meta.env.MODE === "development") {
 
         resultEl.remove();
     }
+
+    async function testAdBlockAndExcludeFn() {
+        function matchExcludeFn(el: HTMLElement) {
+            return el.matches('body');
+        }
+
+        const selector = await window.spyXX.getSelector({
+            matchExcludeFn
+        });
+
+        let targetSelector = await window.spyXX.getParent(selector, {
+            matchExcludeFn,
+            title: "现在看起来怎么样?",
+            submitBtnText: "看起来不错",
+            onCurrSelectElChange(el) {
+                el.style.visibility = "hidden";
+
+                return () => {
+                    el.style.visibility = "";
+                }
+            }
+        });
+
+        let resultEl = document.querySelector(targetSelector);
+
+        if (!resultEl) {
+            console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
+            return;
+        }
+
+        resultEl.remove();
+    }
     testAdBlock();
 }

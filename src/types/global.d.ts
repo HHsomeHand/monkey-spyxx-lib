@@ -27,6 +27,9 @@ export interface SpyXXGetSelectorOptionsType {
     onCurrSelectElChange?: ((el: HTMLElement) => (() => void));
 
     excludeSelectors?: string[];
+
+    // 返回 true 为排除, 返回 false 为不排除
+    matchExcludeFn?: ((el: HTMLElement) => boolean);
 }
 
 export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">

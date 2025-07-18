@@ -37,10 +37,25 @@ export const UserSelectDialog = memo((
         isShowPauseState: contextIsShowPauseState = true, // 默认显示是否暂停
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
         isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
-        onCurrSelectElChange: contextOnCurrSelectChange = () => {return () => {}},
+        onCurrSelectElChange: contextOnCurrSelectChange = undefined,
         submitBtnText: contextSubmitBtnText = "提交",
-        excludeSelectors: contextExcludeSelectors = []
+        excludeSelectors: contextExcludeSelectors = [],
+        matchExcludeFn: contextMatchExcludeFn = undefined
     } = useContext(ParamOptionContext);
+
+    function matchExcludeFn(el: HTMLElement) {
+        for (const excludeSelector of contextExcludeSelectors) {
+            if (el.matches(excludeSelector)) {
+                return true;
+            }
+        }
+
+        if (!contextMatchExcludeFn) {
+            return false;
+        }
+
+        return contextMatchExcludeFn(el);
+    }
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
 
@@ -54,10 +69,8 @@ export const UserSelectDialog = memo((
             return;
         }
 
-        for (const excludeSelector of contextExcludeSelectors) {
-            if (el.matches(excludeSelector)) {
-                return;
-            }
+        if (matchExcludeFn(el)) {
+            return;
         }
 
         private_setCurrSelectedEl(el);
@@ -81,6 +94,7 @@ export const UserSelectDialog = memo((
     }, []);
 
     useEffect(() => {
+        if (!contextOnCurrSelectChange) return;
         if (!currSelectedEl) return;
 
         return contextOnCurrSelectChange(currSelectedEl);
@@ -185,7 +199,7 @@ export const UserSelectDialog = memo((
             return [];
         }
 
-        return getSelector(currSelectedEl, contextExcludeSelectors).pathArray;
+        return getSelector(currSelectedEl, matchExcludeFn).pathArray;
     }, [currSelectedEl], (arr) => (arr.length > 0) && isPauseSelected, []);
 
     // 实现鼠标移动选中元素

@@ -1,6 +1,6 @@
 export function getSelector(
     element: Element,
-    excludeSelectors: string[] = []
+    matchExcludeFn?: ((el: HTMLElement) => boolean)
 ) {
     const path = [];
     let current: Element | null = element;
@@ -8,10 +8,8 @@ export function getSelector(
     while (current !== null && current !== document.documentElement) {
         let isContinue = false;
 
-        for (const excludeSelector of excludeSelectors) {
-            if (current.matches(excludeSelector)) {
-                isContinue = true;
-            }
+        if (matchExcludeFn && matchExcludeFn(current as HTMLElement)) {
+            isContinue = true;
         }
 
         if (isContinue) {
