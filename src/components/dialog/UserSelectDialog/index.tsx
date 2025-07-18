@@ -1,6 +1,6 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
@@ -17,10 +17,10 @@ import CornSelectorDisplayer, {
 } from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
 import mergeRefs from "@/utils/mergeRefs.ts";
 import cornMitt from "@/eventBus";
+import ParamOptionContext from "@/context/ParamOptionContext.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
-    title?: string,
     onResult?: (selector: string) => void;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
     ref?: React.RefObject<HTMLDivElement>;
@@ -30,8 +30,13 @@ export const UserSelectDialog = memo((
     props:  UserSelectDialogProps
 ) => {
     let {
-        title: propTitle = ""
-    } = props;
+        title: contextTitle = "请将光标放在目标元素上",
+        description: contextDescription = "",
+        initPauseState: contextInitPauseState = false, // 默认不暂停
+        initSelector: contextInitSelector = "",
+        isShowPauseState: contextIsShowPauseState = true, // 默认显示是否暂停
+        isShowInductor: contextIsShowInductor = true, // 默认显示感应器
+    } = useContext(ParamOptionContext);
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
 
@@ -48,10 +53,27 @@ export const UserSelectDialog = memo((
         private_setCurrSelectedEl(el);
     }
 
+    // 处理 contextInitSelector
+    useEffect(() => {
+        if (contextInitSelector === "") {
+            return ;
+        }
+
+        const el = document.querySelector(contextInitSelector);
+
+        if (!el) {
+            console.log("spyxx: 传入的 initSelector 无效");
+
+            return;
+        }
+
+        setCurrSelectedEl(el as HTMLElement);
+    }, []);
+
     // 保存选中元素的阴影样式, 方便选中下一个时, 恢复
     let preBoxShadowRef = useRef("");
 
-    // 实现 shadowBox 的保存与回复
+    // 实现 shadowBox 的保存与恢复
     useEffect(() => {
         if (!currSelectedEl) return;
 
@@ -83,7 +105,7 @@ export const UserSelectDialog = memo((
         }
     }, []);
 
-    const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(false);
+    const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(contextInitPauseState);
 
     useEffect(() => {
         cornMitt.emit('showToast', {
@@ -157,27 +179,42 @@ export const UserSelectDialog = memo((
 
     let _DialogBody = (
         <>
+            {
+                contextDescription !== "" && (
+                    <p>{contextDescription}</p>
+                )
+            }
             <CornSelectorDisplayer
                 ref={selectorDisplayerRef}
                 currSelectorArr={currSelectorArr}
                 onCurrElChange={onCurrElChange}
             />
 
-            <p>
-                当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
-            </p>
+            {
+                contextIsShowPauseState && (
+                    <p>
+                        当前选择状态: {isPauseSelected ? "暂停" : "未暂停"}
+                    </p>
+                )
+            }
 
-            <p>
-                划过下方的感应区, 继续进行选择:
-            </p>
+            {
+                contextIsShowInductor && (
+                    <>
+                        <p>
+                            划过下方的感应区, 继续进行选择:
+                        </p>
 
-            <div
-                className="w-10 h-5 bg-background"
-                onMouseMove={e => {
-                    setIsPauseSelected(false);
-                }}
-            >
-            </div>
+                        <div
+                            className="w-10 h-5 bg-background"
+                            onMouseMove={e => {
+                                setIsPauseSelected(false);
+                            }}
+                        >
+                        </div>
+                    </>
+                )
+            }
 
             <CornButton data-slot="submit-btn" onClick={onSubmitBtnClick}>
                 提交
@@ -203,7 +240,7 @@ export const UserSelectDialog = memo((
             <CornDialog ref={mergeRefs(containerRef, props.ref)}>
                 <CornDialogContent>
                     <CornDialogHeader>
-                        {propTitle}
+                        {contextTitle}
                     </CornDialogHeader>
 
                     <CornDialogBody className="flex flex-col gap-3 p-2" ref={bodyRef}>

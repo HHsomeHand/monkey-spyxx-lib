@@ -8,19 +8,24 @@ import CornAppWrapper from "./style.ts";
 import {CSSTransition} from "react-transition-group";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import ShowToast from "./c-cpns/ShowToast";
+import {SpyXXGetSelectorOptionsType} from "@/types/global";
+import ParamOptionContext from "@/context/ParamOptionContext.ts";
 
 interface CornAppProps {
     className?: string;
     children?: React.ReactNode;
+    paramOptions: SpyXXGetSelectorOptionsType,
 }
 
 export const CornApp = memo((props: CornAppProps) => {
     return (
-        <CornAppWrapper className={clsx(props.className, "corn-app")}>
-            {props.children}
+        <ParamOptionContext.Provider value={props.paramOptions}>
+            <CornAppWrapper className={clsx(props.className, "corn-app")}>
+                {props.children}
 
-            <ShowToast/>
-        </CornAppWrapper>
+                <ShowToast/>
+            </CornAppWrapper>
+        </ParamOptionContext.Provider>
     );
 });
 

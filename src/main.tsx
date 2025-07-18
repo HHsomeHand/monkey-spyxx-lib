@@ -5,7 +5,7 @@ import "@/assets/css/global.css";
 import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
-import {ISpyXX} from "@/types/global";
+import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
 
 function renderDialog(dialog: React.ReactNode) {
     return ReactDOM.createRoot(
@@ -18,21 +18,27 @@ function renderDialog(dialog: React.ReactNode) {
 }
 
 const spyXX: ISpyXX = {
-    async getSelector() {
+    async getSelector(options: SpyXXGetSelectorOptionsType = {}) {
         return new Promise((resolve) => {
             function onResult(result: string) {
                 resolve(result);
             }
 
             renderDialog(
-                <CornApp>
-                    <UserSelectDialogController title="请将光标放在目标元素上:" onResult={onResult} />
+                <CornApp paramOptions={options}>
+                    <UserSelectDialogController onResult={onResult} />
                 </CornApp>,
             );
         });
     },
-    async getParent(selector: string) {
-        return "ccc";
+    async getParent(selector: string, options: SpyXXGetParentOptionsType = {}) {
+        return this.getSelector({
+            isShowPauseState: false,
+            initPauseState: true,
+            isShowInductor: false,
+            initSelector: selector,
+            ...options
+        });
     },
 };
 
@@ -42,7 +48,7 @@ if (import.meta.env.MODE === "development") {
     // 仅在开发环境运行的代码
     console.log(cornDebugModeHint);
 
-    async function main() {
+    async function mainSelectToRemove() {
         let selector = await window.spyXX.getSelector();
 
         if (!selector) {
@@ -60,5 +66,5 @@ if (import.meta.env.MODE === "development") {
         resultEl.remove();
     }
 
-    main();
+    mainSelectToRemove();
 }

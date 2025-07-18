@@ -41,7 +41,7 @@ export function CornDialogHeader({
 }: React.ComponentProps<"div">) {
     return (
         <div
-            className={clsx("text-base/12 text-center font-bold", className)}
+            className={clsx("text-base/12 text-center font-bold min-h-10", className)}
             data-slot="dialog__title"
             {...props}
         >
