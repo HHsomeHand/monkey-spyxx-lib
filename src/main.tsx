@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
-import { ISpyXX } from "@/types";
 import "@/assets/css/global.css";
 import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController.tsx";
+import {ISpyXX} from "@/types/global";
 
 function renderDialog(dialog: React.ReactNode) {
     return ReactDOM.createRoot(
@@ -43,9 +43,21 @@ if (import.meta.env.MODE === "development") {
     console.log(cornDebugModeHint);
 
     async function main() {
-        let result = await window.spyXX.getSelector();
+        let selector = await window.spyXX.getSelector();
 
-        console.log(result);
+        if (!selector) {
+            console.log("用户取消了选择");
+            return;
+        }
+
+        let resultEl = document.querySelector(selector);
+
+        if (!resultEl) {
+            console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
+            return;
+        }
+
+        resultEl.remove();
     }
 
     main();
