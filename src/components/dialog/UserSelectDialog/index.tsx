@@ -146,6 +146,14 @@ export const UserSelectDialog = memo((
         telescopeEl.style.width = `${rect.width}px`;
 
         telescopeEl.style.height = `${rect.height}px`;
+
+        const style = window.getComputedStyle(currSelectedEl);
+
+        // 拷贝每个角的 border-radius
+        telescopeEl.style.borderTopLeftRadius = style.borderTopLeftRadius;
+        telescopeEl.style.borderTopRightRadius = style.borderTopRightRadius;
+        telescopeEl.style.borderBottomRightRadius = style.borderBottomRightRadius;
+        telescopeEl.style.borderBottomLeftRadius = style.borderBottomLeftRadius;
     }, [currSelectedEl]);
 
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(contextInitPauseState);
