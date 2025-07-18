@@ -119,7 +119,7 @@ export const UserSelectDialog = memo((
         }
 
         return getSelector(currSelectedEl).pathArray;
-    }, [currSelectedEl], isPauseSelected, []);
+    }, [currSelectedEl], (arr) => (arr.length > 0) && isPauseSelected, []);
 
     // 实现鼠标移动选中元素
     useWindowEventListener('mousemove', useCallback(throttle((e) => {
@@ -184,6 +184,7 @@ export const UserSelectDialog = memo((
                     <p>{contextDescription}</p>
                 )
             }
+
             <CornSelectorDisplayer
                 ref={selectorDisplayerRef}
                 currSelectorArr={currSelectorArr}

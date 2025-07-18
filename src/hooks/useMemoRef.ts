@@ -5,7 +5,7 @@ import {getSelector} from "@/utils/getSelector.ts";
 export function useMemoRef<T>(
     factory: () => T,
     deps: DependencyList,
-    isUseRefCache: boolean,
+    isUseRefCache: boolean | ((preValue: T) => boolean),
     initValue: T
 ): [
     T,
@@ -14,7 +14,13 @@ export function useMemoRef<T>(
     const preValueRef = useRef<T>(initValue);
 
     const memo = useMemo<T>(() => {
-        if (isUseRefCache) {
+        let l_isUseRefCache = isUseRefCache;
+
+        if (typeof isUseRefCache === "function") {
+            l_isUseRefCache = isUseRefCache(preValueRef.current);
+        }
+
+        if (l_isUseRefCache) {
             return preValueRef.current;
         }
 

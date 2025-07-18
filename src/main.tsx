@@ -48,13 +48,21 @@ if (import.meta.env.MODE === "development") {
     // 仅在开发环境运行的代码
     console.log(cornDebugModeHint);
 
-    async function mainSelectToRemove() {
+    async function testSelectToLog(): Promise<string> {
         let selector = await window.spyXX.getSelector();
 
         if (!selector) {
             console.log("用户取消了选择");
-            return;
+            return new Promise<string>((resolve) => {});
         }
+
+        console.log(selector);
+
+        return selector;
+    }
+
+    async function testSelectToRemove() {
+        const selector = await testSelectToLog();
 
         let resultEl = document.querySelector(selector);
 
@@ -66,5 +74,15 @@ if (import.meta.env.MODE === "development") {
         resultEl.remove();
     }
 
-    mainSelectToRemove();
+    async function testSelectParent() {
+        const selector = "body > div.L3eUgb > div.o3j99.n1xJcf.Ne6nSd > div.LX3sZb > div > div > header#gb > div#gbwa > div.gb_D > a.gb_B";
+
+        const parentSelector = await window.spyXX.getParent(selector);
+
+        console.log(parentSelector);
+
+        console.log(document.querySelector(parentSelector));
+    }
+
+    testSelectParent();
 }
