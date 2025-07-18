@@ -76,8 +76,6 @@ export const CornSelectorDisplayer = memo((
                 {
                     showList.map((selector, index) => {
                         function onSelectorClick() {
-                            if (index === 0) return;
-
                             setShowIndex(index);
                         }
 
@@ -102,4 +100,5 @@ export const CornSelectorDisplayer = memo((
     return jsx;
 });
 
+// @ts-ignore
 export default CornSelectorDisplayer;
