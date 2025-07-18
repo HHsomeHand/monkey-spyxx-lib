@@ -38,6 +38,7 @@ export const UserSelectDialog = memo((
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
         isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
         onCurrSelectElChange: contextOnCurrSelectChange = () => {return () => {}},
+        submitBtnText: contextSubmitBtnText = "提交"
     } = useContext(ParamOptionContext);
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
@@ -276,7 +277,7 @@ export const UserSelectDialog = memo((
             }
 
             <CornButton className="border-2! border-neutral-200!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
-                提交
+                {contextSubmitBtnText}
             </CornButton>
 
             <a

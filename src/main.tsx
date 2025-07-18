@@ -85,9 +85,11 @@ if (import.meta.env.MODE === "development") {
     }
 
     async function testAdBlock() {
-        const selector = "body > div.L3eUgb > div.o3j99.n1xJcf.Ne6nSd > div.LX3sZb > div > div > header#gb > div#gbwa > div.gb_D > a.gb_B";
+        const selector = await window.spyXX.getSelector();
 
         let targetSelector = await window.spyXX.getParent(selector, {
+            title: "现在看起来怎么样?",
+            submitBtnText: "看起来不错",
             onCurrSelectElChange(el) {
                 el.style.visibility = "hidden";
 

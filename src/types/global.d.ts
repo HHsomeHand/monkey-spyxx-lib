@@ -5,6 +5,9 @@ export interface SpyXXGetSelectorOptionsType {
     // 对话框内容
     description?: string;
 
+    // 对话框提交按钮的文本内容
+    submitBtnText?: string;
+
     // 是否显示暂停状态
     isShowPauseState?: boolean;
 
@@ -21,7 +24,7 @@ export interface SpyXXGetSelectorOptionsType {
     // 推荐使用 false, box shadow 是第一版的代码遗留下来的 legacy, 可能适用于某些特殊场景
     isUseShadow?: boolean;
 
-    onCurrSelectElChange?: ((el: HTMLElement) => (() => void))
+    onCurrSelectElChange?: ((el: HTMLElement) => (() => void));
 }
 
 export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">
