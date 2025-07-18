@@ -20,6 +20,8 @@ export interface SpyXXGetSelectorOptionsType {
     // 是否使用 box shadow 标记选中元素, 为 false 则使用方块来标记
     // 推荐使用 false, box shadow 是第一版的代码遗留下来的 legacy, 可能适用于某些特殊场景
     isUseShadow?: boolean;
+
+    onCurrSelectElChange?: ((el: HTMLElement) => (() => void))
 }
 
 export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">

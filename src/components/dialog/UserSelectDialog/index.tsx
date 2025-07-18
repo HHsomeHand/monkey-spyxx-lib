@@ -37,6 +37,7 @@ export const UserSelectDialog = memo((
         isShowPauseState: contextIsShowPauseState = true, // 默认显示是否暂停
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
         isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
+        onCurrSelectElChange: contextOnCurrSelectChange = () => {return () => {}},
     } = useContext(ParamOptionContext);
 
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
@@ -70,6 +71,12 @@ export const UserSelectDialog = memo((
 
         setCurrSelectedEl(el as HTMLElement);
     }, []);
+
+    useEffect(() => {
+        if (!currSelectedEl) return;
+
+        return contextOnCurrSelectChange(currSelectedEl);
+    }, [currSelectedEl]);
 
     // 保存选中元素的阴影样式, 方便选中下一个时, 恢复
     let preBoxShadowRef = useRef("");

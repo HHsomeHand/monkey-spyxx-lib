@@ -84,5 +84,27 @@ if (import.meta.env.MODE === "development") {
         console.log(document.querySelector(parentSelector));
     }
 
-    testSelectToRemove();
+    async function testAdBlock() {
+        const selector = "body > div.L3eUgb > div.o3j99.n1xJcf.Ne6nSd > div.LX3sZb > div > div > header#gb > div#gbwa > div.gb_D > a.gb_B";
+
+        let targetSelector = await window.spyXX.getParent(selector, {
+            onCurrSelectElChange(el) {
+                el.style.visibility = "hidden";
+
+                return () => {
+                    el.style.visibility = "";
+                }
+            }
+        });
+
+        let resultEl = document.querySelector(targetSelector);
+
+        if (!resultEl) {
+            console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
+            return;
+        }
+
+        resultEl.remove();
+    }
+    testAdBlock();
 }
