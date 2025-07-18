@@ -83,7 +83,7 @@ export const CornSelectorDisplayer = memo((
                             }
 
                             return (
-                                <React.Fragment key={selector}>
+                                <React.Fragment key={selector + index}>
                                     <CornButton onClick={onSelectorClick}>{selector}</CornButton>
                                     {
                                         index < showIndex && (

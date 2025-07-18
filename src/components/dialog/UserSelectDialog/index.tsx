@@ -15,12 +15,14 @@ import useMemoRef from "@/hooks/useMemoRef.ts";
 import CornSelectorDisplayer, {
     CornSelectorDisplayerRef
 } from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
+import mergeRefs from "@/utils/mergeRefs.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
     title?: string,
     onResult?: (selector: string) => void;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
+    ref?: React.RefObject<HTMLDivElement>;
 }
 
 export const UserSelectDialog = memo((
@@ -182,13 +184,16 @@ export const UserSelectDialog = memo((
 
     const {bodyRef, containerRef} = useDraggableContainer();
 
+    useEffect(() => {
+
+    }, []);
     return (
         <UserSelectDialogWrapper
             className={clsx("", props.className)}
 
             data-slot="user-select-dialog"
         >
-            <CornDialog ref={containerRef}>
+            <CornDialog ref={mergeRefs(containerRef, props.ref)}>
                 <CornDialogContent>
                     <CornDialogHeader>
                         {propTitle}

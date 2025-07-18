@@ -4,7 +4,7 @@ import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
 import "@/assets/css/global.css";
 import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
-import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController.tsx";
+import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
 import {ISpyXX} from "@/types/global";
 
 function renderDialog(dialog: React.ReactNode) {
