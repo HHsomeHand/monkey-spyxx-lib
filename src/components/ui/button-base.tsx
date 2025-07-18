@@ -21,7 +21,7 @@ export function CornButton({
     return (
         <button
             ref={btnRef}
-            className={clsx(`bg-background border-border border-2`, className)}
+            className={clsx('', className)}
             {...props}
             data-slot="button"
         >

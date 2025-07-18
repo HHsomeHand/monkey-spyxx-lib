@@ -73,7 +73,7 @@ export const CornSelectorDisplayer = memo((
     return (
         <>
             {
-                showList.length !== 0 && <section className="flex flex-wrap">
+                showList.length !== 0 && <section className="flex flex-wrap overflow-y-auto h-15 items-center">
                     {
                         showList.map((selector, index) => {
                             function onSelectorClick() {

@@ -128,7 +128,7 @@ export const UserSelectDialog = memo((
     // ======================
     const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
 
-    const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
+    const onSubmitBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
         if (!selectorDisplayerRef.current) {
             console.log("spyxx 出错, selectorDisplayerRef.current 竟然为 null, 不可能存在这种离谱的情况")
             return;
@@ -170,7 +170,7 @@ export const UserSelectDialog = memo((
             >
             </div>
 
-            <CornButton onClick={onCancelBtnClick}>
+            <CornButton data-slot="submit-btn" onClick={onSubmitBtnClick}>
                 提交
             </CornButton>
         </>
@@ -184,7 +184,9 @@ export const UserSelectDialog = memo((
 
     return (
         <UserSelectDialogWrapper
-            className={clsx("user-select-dialog", props.className)}
+            className={clsx("", props.className)}
+
+            data-slot="user-select-dialog"
         >
             <CornDialog ref={containerRef}>
                 <CornDialogContent>
