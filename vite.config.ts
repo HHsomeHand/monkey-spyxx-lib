@@ -10,7 +10,7 @@ import tailwindcss from "@tailwindcss/vite";
 let userscript: MonkeyUserScript = {
     namespace: "npm/vite-plugin-monkey",
     author: "QQ2402398917",
-    version: "1.0.2",
+    version: "1.0.4",
     license: "MIT",
 };
 
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "development") {
     // 仅在开发环境运行的代码
     userscript = {
         ...userscript,
-        match: ["https://www.google.com/"],
+        match: ["*://*/*"],
     };
 }
 

@@ -19,7 +19,8 @@ export function getSelector(
 
         let selector = current.tagName.toLowerCase();
 
-        if (current.id) {
+        if (current.id && isValidCssId(current.id)) {
+            // ID 选择器（即 #xxx）必须以字母或下划线开头
             selector += `#${current.id}`;
         } else {
             let isHTMLElement = current instanceof HTMLElement;
@@ -27,7 +28,11 @@ export function getSelector(
             let isElHasClassName = false;
 
             if (isHTMLElement && current.className) {
-                const classes = String(current.className).split(' ').filter(c => c).join('.');
+                const classes = String(current.className)
+                    .split(' ')
+                    .filter(c => c)
+                    .filter(c => !isClassNameInvalid(c))
+                    .join('.');
 
                 if (classes) {
                     selector += `.${classes}`;
@@ -89,4 +94,17 @@ export function getSelector(
         selector: path.join(' > '),
         pathArray: path,
     }
+}
+
+function isValidCssId(id: string) {
+    // CSS ID selector must not start with a digit or contain invalid characters
+    // Must start with a letter, underscore (_), or hyphen (-), followed by letters, digits, underscores, or hyphens
+    return /^[A-Za-z_\u00A0-\uFFFF][\w\-\u00A0-\uFFFF]*$/.test(id);
+}
+
+function isClassNameInvalid(className: string) {
+    // CSS class names used in querySelector must not contain these unescaped characters
+    const invalidCharsRegex = /[ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/;
+
+    return invalidCharsRegex.test(className);
 }
