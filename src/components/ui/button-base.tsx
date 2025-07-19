@@ -21,7 +21,7 @@ export function CornButton({
     return (
         <button
             ref={btnRef}
-            className={clsx('hover:bg-background! p-0.5! rounded-sm transition-all active:bg-neutral-300!', className)}
+            className={clsx('hover:bg-neutral-200! active:bg-neutral-400! p-0.5! rounded-sm transition-all ', className)}
             {...props}
             data-slot="button"
         >

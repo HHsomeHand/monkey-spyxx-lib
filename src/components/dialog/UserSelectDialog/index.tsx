@@ -322,13 +322,13 @@ export const UserSelectDialog = memo((
 
                 {
                     contextIsShowCancelBtn && (
-                        <CornButton className="grow border-2! border-neutral-200!" data-slot="submit-btn" onClick={onCancelBtnClick}>
+                        <CornButton className="grow bg-neutral-50!" data-slot="submit-btn" onClick={onCancelBtnClick}>
                             {contextCancelBtnText}
                         </CornButton>
                     )
                 }
 
-                <CornButton className="grow border-2! border-neutral-200!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
+                <CornButton className="grow bg-neutral-50!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
                     {contextSubmitBtnText}
                 </CornButton>
 
