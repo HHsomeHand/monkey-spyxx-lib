@@ -6,8 +6,9 @@ import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
 import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
+import { StyleSheetManager } from "styled-components";
 
-function renderDialog(dialog: React.ReactNode) {
+function renderDialog(dialogFactory: (shadowRoot: ShadowRoot) => React.ReactNode) {
     // 创建一个容器元素
     const app = document.createElement("div");
     app.className = "corn-app-shadow-host";
@@ -25,7 +26,7 @@ function renderDialog(dialog: React.ReactNode) {
     shadowRoot.appendChild(styleEl);
 
     // React 渲染到 shadow DOM 中的 mountPoint
-    ReactDOM.createRoot(mountPoint).render(dialog);
+    ReactDOM.createRoot(mountPoint).render(dialogFactory(shadowRoot));
 
     // 返回销毁函数
     return () => {
@@ -42,11 +43,24 @@ const spyXX: ISpyXX = {
                 resolve(result);
             }
 
-            const clearFn = renderDialog(
-                <CornApp paramOptions={options}>
-                    <UserSelectDialogController onResult={onResult} />
-                </CornApp>,
-            );
+            /*
+                styled-components 在 shadowDOM 内, 无法正常工作.
+
+                styled-components 是直接把 css 注入到 document 内.
+
+                而如果 react组件 在 shadowDOM 中, 会直接导致 styled-components 注入的 css 无效.
+
+                通过 StyleSheetManager 指定挂载点
+             */
+            const clearFn = renderDialog((shadowRoot) => {
+                return (
+                    <StyleSheetManager target={shadowRoot}>
+                        <CornApp paramOptions={options}>
+                            <UserSelectDialogController onResult={onResult} />
+                        </CornApp>
+                    </StyleSheetManager>
+                )
+            });
         });
     },
     async getParent(selector: string, options: SpyXXGetParentOptionsType = {}) {
