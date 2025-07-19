@@ -1,20 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
-import "@/assets/css/global.css";
+import globalCSSContent from "@/assets/css/global.css?inline";
 import { CornApp } from "@/components/CornApp";
 import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
 import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
 
 function renderDialog(dialog: React.ReactNode) {
+    // 创建一个容器元素
     const app = document.createElement("div");
     document.body.append(app);
 
-    ReactDOM.createRoot(
-        app
-    ).render(dialog);
+    // 创建 Shadow Root
+    const shadowRoot = app.attachShadow({ mode: "open" });
 
+    // 创建挂载点供 React 渲染（挂到 shadow DOM 中）
+    const mountPoint = document.createElement("div");
+    shadowRoot.appendChild(mountPoint);
+
+    const styleEl = document.createElement("style");
+    styleEl.textContent = globalCSSContent;
+    shadowRoot.appendChild(styleEl);
+
+    // React 渲染到 shadow DOM 中的 mountPoint
+    ReactDOM.createRoot(mountPoint).render(dialog);
+
+    // 返回销毁函数
     return () => {
         app.remove();
     };
