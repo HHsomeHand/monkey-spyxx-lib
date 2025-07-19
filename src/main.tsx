@@ -10,6 +10,7 @@ import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/
 function renderDialog(dialog: React.ReactNode) {
     // 创建一个容器元素
     const app = document.createElement("div");
+    app.className = "corn-app-shadow-host";
     document.body.append(app);
 
     // 创建 Shadow Root

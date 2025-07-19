@@ -152,7 +152,7 @@ export const UserSelectDialog = memo((
 
         telescopeElRef.current.className = "bg-blue-300 opacity-25 fixed transition-all z-99 pointer-events-none"
 
-        document.querySelector('.corn-app')?.appendChild(telescopeElRef.current);
+        document.querySelector('.corn-app-shadow-host')?.shadowRoot?.appendChild(telescopeElRef.current);
 
         return () => {
             telescopeElRef.current?.remove();
