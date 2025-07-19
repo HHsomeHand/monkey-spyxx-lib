@@ -338,7 +338,7 @@ export const UserSelectDialog = memo((
 
 
             <a
-                className="text-sm text-neutral-600! opacity-55 whitespace-nowrap absolute bottom-[-22px] left-[50%] translate-x-[-50%]"
+                className="text-xs text-neutral-600! opacity-55 whitespace-nowrap absolute bottom-[-27px] left-[50%] translate-x-[-50%]"
                 href="https://bbs.tampermonkey.net.cn/"
                 target="_blank"
             >
