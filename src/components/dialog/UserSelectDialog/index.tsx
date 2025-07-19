@@ -333,18 +333,6 @@ export const UserSelectDialog = memo((
                 </CornButton>
 
             </div>
-
-
-
-
-            <a
-                className="text-xs text-neutral-600! opacity-55 whitespace-nowrap absolute bottom-[-27px] left-[50%] translate-x-[-50%]"
-                href="https://bbs.tampermonkey.net.cn/"
-                target="_blank"
-            >
-                油猴中文网: https://bbs.tampermonkey.net.cn/
-            </a>
-
         </>
     )
 
@@ -373,6 +361,15 @@ export const UserSelectDialog = memo((
                         {_DialogBody}
                     </CornDialogBody>
                 </CornDialogContent>
+
+
+                <a
+                    className="text-xs text-neutral-600! opacity-55 whitespace-nowrap block w-full text-center py-0.5"
+                    href="https://bbs.tampermonkey.net.cn/"
+                    target="_blank"
+                >
+                    油猴中文网: https://bbs.tampermonkey.net.cn/
+                </a>
             </CornDialog>
         </UserSelectDialogWrapper>
     );
