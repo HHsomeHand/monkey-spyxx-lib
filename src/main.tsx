@@ -154,5 +154,107 @@ if (import.meta.env.MODE === "development") {
 
         resultEl.remove();
     }
-    testAdBlock();
+
+    async function testAdBlockStep() {
+        let l_currStep = 0;
+
+        let l_selector = "";
+
+        let l_isEnd = false;
+
+        while (true) {
+            switch (l_currStep) {
+                // 选择要删除的元素
+                case 0: {
+                    l_selector = await window.spyXX.getSelector({
+                        excludeSelectors: ["body"],
+                    });
+
+                    if (l_selector !== "") {
+                        l_currStep++;
+                    } else {
+                        showToast("用户取消了选择");
+                        l_isEnd = true;
+                    }
+
+                    break;
+                }
+                case 1: {
+                    let targetSelector = await window.spyXX.getParent(l_selector, {
+                        excludeSelectors: ["body"],
+                        title: "现在看起来怎么样?",
+                        submitBtnText: "看起来不错",
+                        cancelBtnText: "上一步",
+                        onCurrSelectElChange(el) {
+                            el.style.visibility = "hidden";
+
+                            return () => {
+                                el.style.visibility = "";
+                            }
+                        }
+                    });
+
+                    if (targetSelector === "") {
+                        l_currStep--;
+                        break;
+                    }
+
+                    let resultEl = document.querySelector(targetSelector);
+
+                    if (!resultEl) {
+                        console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
+                        break;
+                    }
+
+                    resultEl.remove();
+
+                    l_isEnd = true;
+                }
+            }
+
+            if (l_isEnd) {
+                break;
+            }
+        }
+
+        showToast("结束!");
+
+        function showToast(message: string) {
+            // @ts-ignore
+            let toast = document.body.toast;
+
+            if (toast === undefined) {
+                toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '55vh';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.padding = '10px 20px';
+                toast.style.backgroundColor = '#333';
+                toast.style.color = '#fff';
+                toast.style.borderRadius = '5px';
+                toast.style.fontSize = '14px';
+                toast.style.zIndex = '9999';
+                toast.style.opacity = '0';
+                toast.style.transition = 'all 0.5s ease';
+                toast.style.visibility = 'hidden';
+                document.body.appendChild(toast);
+                // @ts-ignore
+                document.body.toast = toast;
+            }
+            toast.innerText = message;
+
+            // 显示 toast
+            toast.style.opacity = '1';
+            toast.style.visibility = 'visible';
+
+            // 3秒后隐藏
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.visibility = 'hidden';
+            }, 3000);
+        }
+    }
+
+    testAdBlockStep();
 }
