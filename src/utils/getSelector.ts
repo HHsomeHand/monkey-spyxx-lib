@@ -27,6 +27,7 @@ export function getSelector(
 
             let isElHasClassName = false;
 
+            // 只有 HtmlElement 才有类名, SVG 这种 Element 获取类名是一个 object, 行为不正常
             if (isHTMLElement && current.className) {
                 const classes = String(current.className)
                     .split(' ')
@@ -41,7 +42,9 @@ export function getSelector(
                 isElHasClassName = true;
             }
 
-            const siblings = Array.from(current.parentElement!.children).filter(
+            const siblings = Array.from(current.parentElement!.children);
+
+            const sameElIndex = siblings.findIndex(
                 sibling => {
                     let isSameTag = sibling.tagName === current!.tagName;
 
@@ -78,10 +81,12 @@ export function getSelector(
                 return true;
             }
 
-            if (siblings.length > 1) {
+            if (sameElIndex != -1) {
                 const index = siblings.indexOf(current) + 1;
 
                 if (index !== 1) {
+                    // nth-child 是指这个 元素 是 父元素 的第几个子元素
+                    // nth-child 的作用为指定 这个元素是父元素的第几个子元素, 而不是相同选择器的第几个元素
                     selector += `:nth-child(${index})`;
                 }
             }
