@@ -22,6 +22,7 @@ import ParamOptionContext from "@/context/ParamOptionContext.ts";
 export interface UserSelectDialogProps {
     className?: string,
     onResult?: (selector: string) => void;
+    isShowDialog: boolean;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
     ref?: React.RefObject<HTMLDivElement>;
 }
@@ -40,7 +41,9 @@ export const UserSelectDialog = memo((
         onCurrSelectElChange: contextOnCurrSelectChange = undefined,
         submitBtnText: contextSubmitBtnText = "提交",
         excludeSelectors: contextExcludeSelectors = [],
-        matchExcludeFn: contextMatchExcludeFn = undefined
+        matchExcludeFn: contextMatchExcludeFn = undefined,
+        cancelBtnText: contextCancelBtnText = "取消",
+        isShowCancelBtn: contextIsShowCancelBtn = true,
     } = useContext(ParamOptionContext);
 
     function matchExcludeFn(el: HTMLElement) {
@@ -186,6 +189,12 @@ export const UserSelectDialog = memo((
         telescopeEl.style.borderBottomLeftRadius = style.borderBottomLeftRadius;
     }, [currSelectedEl]);
 
+    useEffect(() => {
+        if (!props.isShowDialog && telescopeElRef.current) {
+            telescopeElRef.current.style.opacity = "0";
+        }
+    }, [props.isShowDialog]);
+
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(contextInitPauseState);
 
     useEffect(() => {
@@ -240,15 +249,26 @@ export const UserSelectDialog = memo((
     // ======================
     const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
 
+    const onFinishBtnClick = useCallback((result: string) => {
+        // 等待过渡动画结束
+        setTimeout(() => {
+            props.onResult?.(result);
+        }, 500);
+
+        props.onIsShowDialogChange?.(false);
+    }, [])
+
     const onSubmitBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
         if (!selectorDisplayerRef.current) {
             console.log("spyxx 出错, selectorDisplayerRef.current 竟然为 null, 不可能存在这种离谱的情况")
             return;
         }
 
-        props.onResult?.(selectorDisplayerRef.current.getSelector());
+        onFinishBtnClick(selectorDisplayerRef.current.getSelector())
+    }, []);
 
-        props.onIsShowDialogChange?.(false);
+    const onCancelBtnClick: OnBtnClickFnTYpe =  useCallback(() => {
+        onFinishBtnClick("")
     }, []);
 
 
@@ -298,9 +318,24 @@ export const UserSelectDialog = memo((
                 )
             }
 
-            <CornButton className="border-2! border-neutral-200!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
-                {contextSubmitBtnText}
-            </CornButton>
+            <div className="flex gap-2">
+
+                {
+                    contextIsShowCancelBtn && (
+                        <CornButton className="grow border-2! border-neutral-200!" data-slot="submit-btn" onClick={onCancelBtnClick}>
+                            {contextCancelBtnText}
+                        </CornButton>
+                    )
+                }
+
+                <CornButton className="grow border-2! border-neutral-200!" data-slot="submit-btn" onClick={onSubmitBtnClick}>
+                    {contextSubmitBtnText}
+                </CornButton>
+
+            </div>
+
+
+
 
             <a
                 className="text-sm text-neutral-600! opacity-55 whitespace-nowrap absolute bottom-[-22px] left-[50%] translate-x-[-50%]"
@@ -344,4 +379,5 @@ export const UserSelectDialog = memo((
 });
 
 
+// @ts-ignore
 export default UserSelectDialog;

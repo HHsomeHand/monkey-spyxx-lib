@@ -37,6 +37,12 @@ const spyXX: ISpyXX = {
         });
     },
     async getParent(selector: string, options: SpyXXGetParentOptionsType = {}) {
+        if (selector === "") {
+            console.warn("spyxx getParent selector 为空字符串, 请检查后再调用本函数")
+
+            return "";
+        }
+
         return this.getSelector({
             isShowPauseState: false,
             initPauseState: true,

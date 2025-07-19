@@ -8,6 +8,12 @@ export interface SpyXXGetSelectorOptionsType {
     // 对话框提交按钮的文本内容
     submitBtnText?: string;
 
+    // 对话框关闭按钮的文本内容
+    cancelBtnText?: string;
+
+    // 是否显示关闭按钮
+    isShowCancelBtn?: boolean;
+
     // 是否显示暂停状态
     isShowPauseState?: boolean;
 

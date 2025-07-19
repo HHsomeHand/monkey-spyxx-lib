@@ -4,7 +4,7 @@ import UserSelectDialogControllerWrapper from "./style.ts";
 import { CSSTransition } from 'react-transition-group';
 
 export const UserSelectDialogController = memo((
-    props:  Omit<UserSelectDialogProps, 'onIsShowDialogChange'>
+    props:  Omit<UserSelectDialogProps, 'onIsShowDialogChange' | 'isShowDialog'>
 ) => {
     const [isShowDialog, setIsShowDialog] = useState(true);
 
@@ -24,7 +24,7 @@ export const UserSelectDialogController = memo((
                 unmountOnExit // 退出时卸载组件
                 appear={true}
             >
-                <UserSelectDialog ref={dialogRef} onIsShowDialogChange={setIsShowDialog} {...props}/>
+                <UserSelectDialog ref={dialogRef} isShowDialog={isShowDialog} onIsShowDialogChange={setIsShowDialog} {...props}/>
             </CSSTransition>
         </UserSelectDialogControllerWrapper>
     );
