@@ -10,7 +10,7 @@ import tailwindcss from "@tailwindcss/vite";
 let userscript: MonkeyUserScript = {
     namespace: "npm/vite-plugin-monkey",
     author: "QQ2402398917",
-    version: "0.0.1",
+    version: "1.0.2",
     license: "MIT",
 };
 
@@ -43,15 +43,15 @@ export default defineConfig({
             entry: "src/main.tsx",
             userscript,
             server: { mountGmApi: true }, // 将 GM 函数注入为全局变量
-            build: {
-                externalGlobals: {
-                    react: cdn.jsdelivr("React", "umd/react.production.min.js"),
-                    "react-dom": cdn.jsdelivr(
-                        "ReactDOM",
-                        "umd/react-dom.production.min.js",
-                    ),
-                },
-            },
+            // build: {
+            //     externalGlobals: {
+            //         react: cdn.jsdelivr("React", "umd/react.production.min.js"),
+            //         "react-dom": cdn.jsdelivr(
+            //             "ReactDOM",
+            //             "umd/react-dom.production.min.js",
+            //         ),
+            //     },
+            // },
         }),
     ],
 });
