@@ -1,8 +1,8 @@
 import React, {memo, useEffect, useRef, useState} from "react";
 import UserSelectDialogControllerWrapper from "./style.ts";
 import {
-    UserSelectDialog,
-    UserSelectDialogProps
+    SpyxxUserSelectDialog,
+    SpyxxUserSelectDialogProps
 } from "./c-cpns/UserSelectDialog";
 
 /*
@@ -16,7 +16,7 @@ import {
  */
 
 export function UserSelectDialogController(
-    props:  Omit<UserSelectDialogProps, 'onIsShowDialogChange' | 'isShowDialog'>
+    props:  Omit<SpyxxUserSelectDialogProps, 'onIsShowDialogChange' | 'isShowDialog'>
 ) {
     const [isShowDialog, setIsShowDialog] = useState(true);
 
@@ -24,7 +24,7 @@ export function UserSelectDialogController(
         <UserSelectDialogControllerWrapper
             data-slot="user-select-dialog-controller"
         >
-            <UserSelectDialog isShowDialog={isShowDialog} onIsShowDialogChange={setIsShowDialog} {...props}/>
+            <SpyxxUserSelectDialog isShowDialog={isShowDialog} onIsShowDialogChange={setIsShowDialog} {...props}/>
         </UserSelectDialogControllerWrapper>
     );
 }

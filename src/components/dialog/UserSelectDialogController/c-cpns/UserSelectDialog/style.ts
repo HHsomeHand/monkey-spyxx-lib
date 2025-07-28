@@ -3,7 +3,7 @@
 import styled from "styled-components";
 
 // .user-select-dialog
-export const UserSelectDialogAnimation = styled.div`
+export const SpyxxUserSelectDialogAnimation = styled.div`
     /* 进入动画 */
     .dialog-enter, .dialog-appear {
         opacity: 0;
@@ -29,4 +29,4 @@ export const UserSelectDialogAnimation = styled.div`
     }
 `
 
-export default UserSelectDialogAnimation;
+export default SpyxxUserSelectDialogAnimation;

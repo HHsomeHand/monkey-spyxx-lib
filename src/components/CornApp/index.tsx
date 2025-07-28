@@ -6,7 +6,7 @@ import cornMitt from "@/eventBus";
 import {ShowToastOptions} from "@/types/eventBus.ts";
 import CornAppWrapper from "./style.ts";
 import {CSSTransition} from "react-transition-group";
-import ShowToast from "./c-cpns/ShowToast";
+import CornShowToast from "./c-cpns/ShowToast";
 import {SpyXXGetSelectorOptionsType} from "@/types/global";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 
@@ -22,7 +22,7 @@ export function CornApp(props: CornAppProps) {
             <CornAppWrapper className={clsx(props.className, "corn-app")}>
                 {props.children}
 
-                <ShowToast/>
+                <CornShowToast/>
             </CornAppWrapper>
         </ParamOptionContext.Provider>
     );

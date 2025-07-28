@@ -12,15 +12,15 @@ import {useStateRef} from "@/hooks/useStateRef.ts";
 import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
 import CornSelectorDisplayer, {
-    CornSelectorDisplayerRef
+    SpyxxSelectorDisplayerRef
 } from "./c-cpns/CornSelectorDisplayer";
 import mergeRefs from "@/utils/mergeRefs.ts";
 import cornMitt from "@/eventBus";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 import { CSSTransition } from 'react-transition-group';
-import UserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
+import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
 
-export interface UserSelectDialogProps {
+export interface SpyxxUserSelectDialogProps {
     className?: string,
     onResult?: (selector: string) => void;
     isShowDialog: boolean;
@@ -28,18 +28,18 @@ export interface UserSelectDialogProps {
     ref?: React.RefObject<HTMLDivElement>; // 给外部 CSSTransition 使用
 }
 
-export function UserSelectDialog(
-    props:  UserSelectDialogProps
+export function SpyxxUserSelectDialog(
+    props:  SpyxxUserSelectDialogProps
 ) {
     return (
-        <UserSelectDialogAnimation>
-            <UserSelectDialogWithoutAnimation {...props}/>
-        </UserSelectDialogAnimation>
+        <SpyxxUserSelectDialogAnimation>
+            <SpyxxUserSelectDialogWithoutAnimation {...props}/>
+        </SpyxxUserSelectDialogAnimation>
     )
 }
 
-export function UserSelectDialogWithoutAnimation(
-    props:  UserSelectDialogProps
+export function SpyxxUserSelectDialogWithoutAnimation(
+    props:  SpyxxUserSelectDialogProps
 ) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
@@ -88,7 +88,7 @@ export function UserSelectDialogWithoutAnimation(
 }
 
 function DialogBody(
-    props:  UserSelectDialogProps
+    props:  SpyxxUserSelectDialogProps
 ) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
@@ -307,7 +307,7 @@ function DialogBody(
     // ======================
     // ==== Dialog Body =====
     // ======================
-    const selectorDisplayerRef = useRef<CornSelectorDisplayerRef>();
+    const selectorDisplayerRef = useRef<SpyxxSelectorDisplayerRef>();
 
     const onFinishBtnClick = useCallback((result: string) => {
         // 等待过渡动画结束
@@ -399,4 +399,4 @@ function DialogBody(
 }
 
 // @ts-ignore
-export default UserSelectDialog;
+export default SpyxxUserSelectDialog;
