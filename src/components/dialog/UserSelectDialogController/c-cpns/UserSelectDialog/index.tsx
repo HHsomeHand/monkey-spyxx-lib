@@ -24,10 +24,52 @@ export interface UserSelectDialogProps {
     onResult?: (selector: string) => void;
     isShowDialog: boolean;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
-    ref?: React.RefObject<HTMLDivElement>;
+    ref?: React.RefObject<HTMLDivElement>; // 给外部 CSSTransition 使用
 }
 
 export function UserSelectDialog(
+    props:  UserSelectDialogProps
+) {
+    let {
+        title: contextTitle = "请将光标放在目标元素上",
+    } = useContext(ParamOptionContext);
+
+    // =================
+    // ==== Dialog =====
+    // =================
+
+    const {bodyRef, containerRef} = useDraggableContainer();
+    return (
+        <UserSelectDialogWrapper
+            className={clsx("", props.className)}
+
+            data-slot="user-select-dialog"
+        >
+            <CornDialog ref={mergeRefs(containerRef, props.ref)}>
+                <CornDialogContent>
+                    <CornDialogHeader>
+                        {contextTitle}
+                    </CornDialogHeader>
+
+                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={bodyRef}>
+                        <DialogBody {...props}/>
+                    </CornDialogBody>
+                </CornDialogContent>
+
+
+                <a
+                    className="text-xs text-neutral-600! opacity-55 whitespace-nowrap block w-full text-center py-0.5"
+                    href="https://bbs.tampermonkey.net.cn/"
+                    target="_blank"
+                >
+                    油猴中文网: https://bbs.tampermonkey.net.cn/
+                </a>
+            </CornDialog>
+        </UserSelectDialogWrapper>
+    );
+}
+
+function DialogBody(
     props:  UserSelectDialogProps
 ) {
     let {
@@ -278,7 +320,8 @@ export function UserSelectDialog(
         }
     }, [isPauseSelected]);
 
-    let _DialogBody = (
+
+    return (
         <>
             {
                 contextDescription !== "" && (
@@ -335,46 +378,7 @@ export function UserSelectDialog(
             </div>
         </>
     )
-
-    // =================
-    // ==== Dialog =====
-    // =================
-
-    const {bodyRef, containerRef} = useDraggableContainer();
-
-    useEffect(() => {
-
-    }, []);
-    return (
-        <UserSelectDialogWrapper
-            className={clsx("", props.className)}
-
-            data-slot="user-select-dialog"
-        >
-            <CornDialog ref={mergeRefs(containerRef, props.ref)}>
-                <CornDialogContent>
-                    <CornDialogHeader>
-                        {contextTitle}
-                    </CornDialogHeader>
-
-                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={bodyRef}>
-                        {_DialogBody}
-                    </CornDialogBody>
-                </CornDialogContent>
-
-
-                <a
-                    className="text-xs text-neutral-600! opacity-55 whitespace-nowrap block w-full text-center py-0.5"
-                    href="https://bbs.tampermonkey.net.cn/"
-                    target="_blank"
-                >
-                    油猴中文网: https://bbs.tampermonkey.net.cn/
-                </a>
-            </CornDialog>
-        </UserSelectDialogWrapper>
-    );
 }
-
 
 // @ts-ignore
 export default UserSelectDialog;
