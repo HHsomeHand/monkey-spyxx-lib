@@ -21,11 +21,9 @@ import { CSSTransition } from 'react-transition-group';
 import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
 
 export interface SpyxxUserSelectDialogProps {
-    className?: string,
     onResult?: (selector: string) => void;
     isShowDialog: boolean;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
-    ref?: React.RefObject<HTMLDivElement>; // 给外部 CSSTransition 使用
 }
 
 export function SpyxxUserSelectDialog(
