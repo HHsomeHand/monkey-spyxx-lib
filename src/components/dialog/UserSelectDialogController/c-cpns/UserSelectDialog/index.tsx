@@ -1,7 +1,6 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
 import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {UserSelectDialogWrapper} from "./style.ts";
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
 import {getSelector} from "@/utils/getSelector.ts";
@@ -18,6 +17,8 @@ import CornSelectorDisplayer, {
 import mergeRefs from "@/utils/mergeRefs.ts";
 import cornMitt from "@/eventBus";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
+import { CSSTransition } from 'react-transition-group';
+import UserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
 
 export interface UserSelectDialogProps {
     className?: string,
@@ -30,6 +31,16 @@ export interface UserSelectDialogProps {
 export function UserSelectDialog(
     props:  UserSelectDialogProps
 ) {
+    return (
+        <UserSelectDialogAnimation>
+            <UserSelectDialogWithoutAnimation {...props}/>
+        </UserSelectDialogAnimation>
+    )
+}
+
+export function UserSelectDialogWithoutAnimation(
+    props:  UserSelectDialogProps
+) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
     } = useContext(ParamOptionContext);
@@ -38,14 +49,21 @@ export function UserSelectDialog(
     // ==== Dialog =====
     // =================
 
+    const dialogRef = useRef<HTMLDivElement>(null);
+
     const {bodyRef, containerRef} = useDraggableContainer();
     return (
-        <UserSelectDialogWrapper
-            className={clsx("", props.className)}
-
-            data-slot="user-select-dialog"
+        //  react-transition-group 不兼容 React19
+        //  https://github.com/reactjs/react-transition-group/issues/918
+        <CSSTransition
+            nodeRef={dialogRef}
+            in={props.isShowDialog} // 控制动画触发
+            timeout={300} // 动画持续时间（毫秒）
+            classNames="dialog" // 动画类名前缀
+            unmountOnExit // 退出时卸载组件
+            appear={true}
         >
-            <CornDialog ref={mergeRefs(containerRef, props.ref)}>
+            <CornDialog ref={mergeRefs(containerRef, dialogRef)}>
                 <CornDialogContent>
                     <CornDialogHeader>
                         {contextTitle}
@@ -65,7 +83,7 @@ export function UserSelectDialog(
                     油猴中文网: https://bbs.tampermonkey.net.cn/
                 </a>
             </CornDialog>
-        </UserSelectDialogWrapper>
+        </CSSTransition>
     );
 }
 
