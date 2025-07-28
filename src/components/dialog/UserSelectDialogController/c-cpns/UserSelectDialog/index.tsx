@@ -27,9 +27,9 @@ export interface UserSelectDialogProps {
     ref?: React.RefObject<HTMLDivElement>;
 }
 
-export const UserSelectDialog = memo((
+export function UserSelectDialog(
     props:  UserSelectDialogProps
-) => {
+) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
         description: contextDescription = "",
@@ -373,7 +373,7 @@ export const UserSelectDialog = memo((
             </CornDialog>
         </UserSelectDialogWrapper>
     );
-});
+}
 
 
 // @ts-ignore

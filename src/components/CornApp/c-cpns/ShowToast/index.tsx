@@ -12,9 +12,9 @@ interface ShowToastProps {
     className?: string,
 }
 
-export const ShowToast = memo((
+export function ShowToast(
     props:  ShowToastProps
-) => {
+) {
     const [toastMsg, setToastMsg] = useState("");
 
     const [isShowToast, setIsShowToast] = useState(false);
@@ -66,6 +66,6 @@ export const ShowToast = memo((
             </CSSTransition>
         </ShowToastWrapper>
     );
-});
+}
 
 export default ShowToast;

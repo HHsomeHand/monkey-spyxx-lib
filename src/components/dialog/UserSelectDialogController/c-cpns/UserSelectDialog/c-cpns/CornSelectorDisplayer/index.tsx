@@ -14,9 +14,9 @@ interface CornSelectorDisplayerProps {
     ref: React.MutableRefObject<CornSelectorDisplayerRef | undefined>
 }
 
-export const CornSelectorDisplayer = memo((
+export function CornSelectorDisplayer(
     props: CornSelectorDisplayerProps
-) => {
+) {
     let {
         currSelectorArr: propCurrSelectorArr,
         ref
@@ -113,7 +113,7 @@ export const CornSelectorDisplayer = memo((
     )
 
     return jsx;
-});
+}
 
 // @ts-ignore
 export default CornSelectorDisplayer;
