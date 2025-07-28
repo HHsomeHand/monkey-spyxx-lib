@@ -4,7 +4,7 @@ import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useSta
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
 import {getSelector} from "@/utils/getSelector.ts";
-import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
+import {useDraggableContainerV2} from "@/hooks/useDraggableContainerV2.ts";
 import useWindowEventListener from "@/hooks/useWindowEventListener.ts";
 import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 import {throttle} from "lodash";
@@ -49,7 +49,7 @@ export function SpyxxUserSelectDialogWithoutAnimation(
 
     const dialogRef = useRef<HTMLDivElement>(null);
 
-    const {bodyRef, containerRef} = useDraggableContainer();
+    const {bodyRef, containerRef} = useDraggableContainerV2();
     return (
         //  react-transition-group 不兼容 React19
         //  https://github.com/reactjs/react-transition-group/issues/918

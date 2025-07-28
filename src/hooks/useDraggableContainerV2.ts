@@ -1,9 +1,9 @@
-import {makeDraggableInContainer, MakeDraggableInContainerProps} from "@/utils/makeDraggableInContainer.ts";
+import {makeDraggableInContainerV2, MakeDraggableInContainerProps} from "@/utils/makeDraggableInContainerV2.ts";
 import {useEffect, useRef} from "react";
 import CancelFnArr from "@/class/CancelFnArr.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
 
-export function useDraggableContainer(options: Partial<MakeDraggableInContainerProps> = {}) {
+export function useDraggableContainerV2(options: Partial<MakeDraggableInContainerProps> = {}) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const bodyRef = useRef<HTMLDivElement>(null);
@@ -20,7 +20,7 @@ export function useDraggableContainer(options: Partial<MakeDraggableInContainerP
         const bodyEl = bodyRef.current;
 
         {
-            const {cancel} = makeDraggableInContainer(dialogEl, options);
+            const {cancel} = makeDraggableInContainerV2(dialogEl, options);
 
             cancelFnArr.push(cancel);
         }

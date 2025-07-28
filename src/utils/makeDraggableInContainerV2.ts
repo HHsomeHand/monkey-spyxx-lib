@@ -10,7 +10,7 @@ export interface MakeDraggableInContainerProps {
 }
 
 // 拖拽通过 translate 实现, 如果 targetEl 本身有 translate, 请移动到 transform, 让二者叠加就 ok
-export function makeDraggableInContainer(
+export function makeDraggableInContainerV2(
     targetEl: HTMLElement,
     options: Partial<MakeDraggableInContainerProps> = {}
 ) {
