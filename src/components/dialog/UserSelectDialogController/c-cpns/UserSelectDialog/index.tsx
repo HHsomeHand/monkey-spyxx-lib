@@ -12,7 +12,7 @@ import {useStateRef} from "@/hooks/useStateRef.ts";
 import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
 import CornSelectorDisplayer, {
-    SpyxxSelectorDisplayerRef
+    ISpyxxSelectorDisplayerRef
 } from "./c-cpns/CornSelectorDisplayer";
 import mergeRefs from "@/utils/mergeRefs.ts";
 import cornMitt from "@/eventBus";
@@ -20,14 +20,14 @@ import ParamOptionContext from "@/context/ParamOptionContext.ts";
 import { CSSTransition } from 'react-transition-group';
 import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
 
-export interface SpyxxUserSelectDialogProps {
+export interface ISpyxxUserSelectDialogProps {
     onResult?: (selector: string) => void;
     isShowDialog: boolean;
     onIsShowDialogChange?: (newIsShowDialog: boolean) => void;
 }
 
 export function SpyxxUserSelectDialog(
-    props:  SpyxxUserSelectDialogProps
+    props:  ISpyxxUserSelectDialogProps
 ) {
     return (
         <SpyxxUserSelectDialogAnimation>
@@ -37,7 +37,7 @@ export function SpyxxUserSelectDialog(
 }
 
 export function SpyxxUserSelectDialogWithoutAnimation(
-    props:  SpyxxUserSelectDialogProps
+    props:  ISpyxxUserSelectDialogProps
 ) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
@@ -86,7 +86,7 @@ export function SpyxxUserSelectDialogWithoutAnimation(
 }
 
 function DialogBody(
-    props:  SpyxxUserSelectDialogProps
+    props:  ISpyxxUserSelectDialogProps
 ) {
     let {
         title: contextTitle = "请将光标放在目标元素上",
@@ -305,7 +305,7 @@ function DialogBody(
     // ======================
     // ==== Dialog Body =====
     // ======================
-    const selectorDisplayerRef = useRef<SpyxxSelectorDisplayerRef>();
+    const selectorDisplayerRef = useRef<ISpyxxSelectorDisplayerRef>();
 
     const onFinishBtnClick = useCallback((result: string) => {
         // 等待过渡动画结束

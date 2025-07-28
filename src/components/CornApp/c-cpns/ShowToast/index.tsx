@@ -8,12 +8,12 @@ import {ShowToastOptions} from "@/types/eventBus.ts";
 import cornMitt from "@/eventBus";
 import {CSSTransition} from "react-transition-group";
 
-interface CornShowToastProps {
+interface ICornShowToastProps {
     className?: string,
 }
 
 export function CornShowToast(
-    props:  CornShowToastProps
+    props:  ICornShowToastProps
 ) {
     const [toastMsg, setToastMsg] = useState("");
 
