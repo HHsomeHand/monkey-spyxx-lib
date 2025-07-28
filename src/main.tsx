@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
 import globalCSSContent from "@/assets/css/global.css?inline";
 import { CornApp } from "@/components/CornApp";
-import UserSelectDialog from "@/components/dialog/UserSelectDialog";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
 import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
 import { StyleSheetManager } from "styled-components";

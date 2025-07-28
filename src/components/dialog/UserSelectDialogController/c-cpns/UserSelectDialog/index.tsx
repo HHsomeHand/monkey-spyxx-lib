@@ -14,7 +14,7 @@ import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
 import CornSelectorDisplayer, {
     CornSelectorDisplayerRef
-} from "@/components/dialog/UserSelectDialog/c-cpns/CornSelectorDisplayer";
+} from "./c-cpns/CornSelectorDisplayer";
 import mergeRefs from "@/utils/mergeRefs.ts";
 import cornMitt from "@/eventBus";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";

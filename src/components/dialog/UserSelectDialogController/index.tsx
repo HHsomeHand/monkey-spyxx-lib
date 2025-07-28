@@ -1,8 +1,12 @@
 import React, {memo, useEffect, useRef, useState} from "react";
-import UserSelectDialog, {UserSelectDialogProps} from "@/components/dialog/UserSelectDialog";
 import UserSelectDialogControllerWrapper from "./style.ts";
 import { CSSTransition } from 'react-transition-group';
+import {
+    UserSelectDialog,
+    UserSelectDialogProps
+} from "./c-cpns/UserSelectDialog";
 
+// 介绍: 控制 UserSelectDialog 的显示和隐藏, 以及过渡效果
 export const UserSelectDialogController = memo((
     props:  Omit<UserSelectDialogProps, 'onIsShowDialogChange' | 'isShowDialog'>
 ) => {
