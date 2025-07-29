@@ -15,17 +15,17 @@ export function setElmTranslate(elm: HTMLElement, x: number, y: number) {
  *
  * 如果子元素不需要 cursor 为 grab 的样式, 请直接用 cursor-default 覆盖
  *
- * @param Ele 目标元素
+ * @param draggableEl 目标元素
  * @param callback
  */
-export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number) => void) {
+export function makeDraggable(draggableEl: HTMLElement, callback: (x: number, y: number) => void) {
     let scale = 1;
     let originX = 0;
     let originY = 0;
     let isDragging = false;
     let startX: number, startY: number;
 
-    Ele.style.cursor = "grab";
+    draggableEl.style.cursor = "grab";
 
     type cancelCallbackArrType = ReturnType<typeof makeEventListener>[];
     let cancelCallbackArr: cancelCallbackArrType = [];
@@ -41,10 +41,10 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
             startX = event.clientX;
             startY = event.clientY;
 
-            Ele.style.cursor = "grabbing";
-            Ele.style.animationDuration = "0s";
+            draggableEl.style.cursor = "grabbing";
+            draggableEl.style.animationDuration = "0s";
         },
-        Ele,
+        draggableEl,
     );
     cancelCallbackArr.push(cancelMouseDown);
 
@@ -55,8 +55,8 @@ export function makeDraggable(Ele: HTMLElement, callback: (x: number, y: number)
         // event.preventDefault();
         isDragging = false;
 
-        Ele.style.cursor = "grab";
-        Ele.style.animationDuration = "";
+        draggableEl.style.cursor = "grab";
+        draggableEl.style.animationDuration = "";
     });
     cancelCallbackArr.push(cancelMouseUp);
 

@@ -1,18 +1,18 @@
 import {makeDraggable, setElmTranslate} from "@/utils/makeDraggableV2.ts";
 import {throttle} from "lodash";
 
-export interface MakeDraggableInContainerProps {
-    gapX: number,
-    gapY: number,
-    throttleWait: number,
-    containerEl: HTMLElement,
-    initCallback: (options: {minX: number, maxX: number, minY: number, maxY: number}) => void
+export interface IMakeDraggableInContainerProps {
+    gapX?: number,
+    gapY?: number,
+    throttleWait?: number,
+    containerEl?: HTMLElement,
+    initCallback?: (options: {minX: number, maxX: number, minY: number, maxY: number}) => void
 }
 
 // 拖拽通过 translate 实现, 如果 targetEl 本身有 translate, 请移动到 transform, 让二者叠加就 ok
 export function makeDraggableInContainer(
-    targetEl: HTMLElement,
-    options: Partial<MakeDraggableInContainerProps> = {}
+    draggableEl: HTMLElement,
+    options: IMakeDraggableInContainerProps = {}
 ) {
     let {
         gapX: optionGapX = 0,
@@ -27,11 +27,11 @@ export function makeDraggableInContainer(
     let minY: number = 0;
     let maxY: number = 0;
 
-    let originRect = targetEl.getBoundingClientRect();
+    let originRect = draggableEl.getBoundingClientRect();
 
     function calcLimit() {
-        let targetWidth = targetEl.offsetWidth;
-        let targetHeight = targetEl.offsetHeight;
+        let targetWidth = draggableEl.offsetWidth;
+        let targetHeight = draggableEl.offsetHeight;
 
         // 获取父元素边界
         const rect = optionContainerEl.getBoundingClientRect();
@@ -59,7 +59,7 @@ export function makeDraggableInContainer(
 
     // 处理父容器大小变动的边界情况
     function calcOrigin() {
-        const rect = targetEl.getBoundingClientRect();
+        const rect = draggableEl.getBoundingClientRect();
 
         originRect = {
             ...originRect,
@@ -80,7 +80,7 @@ export function makeDraggableInContainer(
     });
 
     // 开始监听目标元素
-    resizeObserver.observe(targetEl);
+    resizeObserver.observe(draggableEl);
     resizeObserver.observe(optionContainerEl);
 
     calcLimitThrottle();
@@ -100,7 +100,7 @@ export function makeDraggableInContainer(
         lastX = restrictedX;
         lastY = restrictedY;
 
-        setElmTranslate(targetEl, restrictedX, restrictedY);
+        setElmTranslate(draggableEl, restrictedX, restrictedY);
 
         return {
             x: lastX,
@@ -108,7 +108,7 @@ export function makeDraggableInContainer(
         }
     }
 
-    const result = makeDraggable(targetEl, (x, y) => {
+    const result = makeDraggable(draggableEl, (x, y) => {
         calcLimitThrottle();
 
         setTranslate(x, y);
@@ -119,7 +119,7 @@ export function makeDraggableInContainer(
         cancel() {
             result.cancel();
 
-            resizeObserver.unobserve(targetEl);
+            resizeObserver.unobserve(draggableEl);
             resizeObserver.unobserve(optionContainerEl);
         }
     }

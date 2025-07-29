@@ -4,7 +4,6 @@ import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useSta
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
 import {getSelector} from "@/utils/getSelector.ts";
-import {useDraggableContainerV2} from "@/hooks/useDraggableContainerV2.ts";
 import useWindowEventListener from "@/hooks/useWindowEventListener.ts";
 import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 import {throttle} from "lodash";
@@ -19,6 +18,7 @@ import cornMitt from "@/eventBus";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 import { CSSTransition } from 'react-transition-group';
 import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
+import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
 
 export interface SpyxxUserSelectDialogProps {
     onResult?: (selector: string) => void;
@@ -47,27 +47,25 @@ export function SpyxxUserSelectDialogWithoutAnimation(
     // ==== Dialog =====
     // =================
 
-    const dialogRef = useRef<HTMLDivElement>(null);
-
-    const {bodyRef, containerRef} = useDraggableContainerV2();
+    const {draggableRef, innerRef} = useDraggableContainer();
     return (
         //  react-transition-group 不兼容 React19
         //  https://github.com/reactjs/react-transition-group/issues/918
         <CSSTransition
-            nodeRef={dialogRef}
+            nodeRef={draggableRef}
             in={props.isShowDialog} // 控制动画触发
             timeout={300} // 动画持续时间（毫秒）
             classNames="dialog" // 动画类名前缀
             unmountOnExit // 退出时卸载组件
             appear={true}
         >
-            <CornDialog ref={mergeRefs(containerRef, dialogRef)}>
+            <CornDialog ref={draggableRef}>
                 <CornDialogContent>
                     <CornDialogHeader>
                         {contextTitle}
                     </CornDialogHeader>
 
-                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={bodyRef}>
+                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={innerRef}>
                         <DialogBody {...props}/>
                     </CornDialogBody>
                 </CornDialogContent>
