@@ -1,11 +1,13 @@
 import {makeDraggable, setElmTranslate} from "@/utils/makeDraggableV2.ts";
 import {throttle} from "lodash";
+import CancelFnArr from "@/class/CancelFnArr.ts";
+import makeEventListener from "@/utils/makeEventListener.ts";
 
 export interface IMakeDraggableInContainerProps {
     gapX?: number,
     gapY?: number,
     throttleWait?: number,
-    containerEl?: HTMLElement,
+    containerEl?: HTMLElement | Window,
     initCallback?: (options: {minX: number, maxX: number, minY: number, maxY: number}) => void
 }
 
@@ -18,7 +20,7 @@ export function makeDraggableInContainer(
         gapX: optionGapX = 0,
         gapY: optionGapY = 0,
         throttleWait: optionThrottleWait = 1000,
-        containerEl: optionContainerEl = document.body,
+        containerEl: optionContainerEl = window, // 很多网站 body 宽高都为 0 (如 youtube tailwind 官网), 如果通过 window.body 会导致显示不正常, 出现消失等问题
         initCallback: optionInitCallback = () => {}
    } = options;
 
@@ -34,7 +36,12 @@ export function makeDraggableInContainer(
         let targetHeight = draggableEl.offsetHeight;
 
         // 获取父元素边界
-        const rect = optionContainerEl.getBoundingClientRect();
+        let rect: DOMRect;
+        if (optionContainerEl instanceof Window) {
+            rect = getWindowBoundingClientRect();
+        } else {
+            rect = optionContainerEl.getBoundingClientRect();
+        }
 
         minX = rect.left + optionGapX; // 左边界
         maxX = rect.right - targetWidth - optionGapX; // 右边界
@@ -68,8 +75,10 @@ export function makeDraggableInContainer(
         }
     };
 
-    // 创建观察器实例
-    const resizeObserver = new ResizeObserver(() => {
+    let cancelFnArr = new CancelFnArr();
+
+
+    function onSizeChange() {
         calcOrigin();
 
         calcLimit();
@@ -77,11 +86,25 @@ export function makeDraggableInContainer(
         const {x, y} = setTranslate(lastX, lastY)
 
         result.setPos(x, y);
-    });
+    }
+    // 创建观察器实例
+    const resizeObserver = new ResizeObserver(onSizeChange);
 
     // 开始监听目标元素
     resizeObserver.observe(draggableEl);
-    resizeObserver.observe(optionContainerEl);
+
+    if (optionContainerEl instanceof Window) {
+        const cancelFn = makeEventListener("resize", onSizeChange);
+
+        cancelFnArr.push(cancelFn);
+    } else {
+        resizeObserver.observe(optionContainerEl);
+
+        cancelFnArr.push(() => {
+            resizeObserver.unobserve(draggableEl);
+            resizeObserver.unobserve(optionContainerEl);
+        })
+    }
 
     calcLimitThrottle();
 
@@ -114,13 +137,32 @@ export function makeDraggableInContainer(
         setTranslate(x, y);
     });
 
+
+    cancelFnArr.push(result.cancel);
+
     return {
         ...result,
         cancel() {
-            result.cancel();
-
-            resizeObserver.unobserve(draggableEl);
-            resizeObserver.unobserve(optionContainerEl);
+            cancelFnArr.doCancel();
         }
     }
+}
+
+function getWindowBoundingClientRect(): DOMRect {
+    const rect = {
+        top: 0,
+        left: 0,
+        right: window.innerWidth,
+        bottom: window.innerHeight,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        x: 0,
+        y: 0
+    };
+    return {
+        ...rect,
+        toJSON() {
+            return rect;
+        }
+    };
 }
