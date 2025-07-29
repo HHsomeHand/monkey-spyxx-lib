@@ -39,9 +39,9 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
         react({
-            // babel: {
-            //     plugins: ['babel-plugin-react-compiler'],
-            // },
+            babel: {
+                plugins: ['babel-plugin-react-compiler'],
+            },
         }),
         monkey({
             entry: "src/main.tsx",
