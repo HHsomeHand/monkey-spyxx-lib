@@ -24,6 +24,7 @@
         "tailwindcss": "^4.1.11"
     },
     "devDependencies": {
+        "@types/jquery": "^3.5.32",
         "@types/lodash": "^4.17.20",
         "@types/node": "^24.0.13",
         "@types/react": "^18.3.16",

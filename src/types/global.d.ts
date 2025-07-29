@@ -1,3 +1,5 @@
+import {CSSElmGetterType, IElmGetter} from "@/types/elmGetter";
+
 export interface ISpyXXGetSelectorOptionsType {
     // 对话框标题, 默认值为 "请将光标放在目标元素上"
     title?: string;
@@ -80,6 +82,15 @@ export interface ISpyXX {
      * @param selector
      */
     getParent: (selector: string, options?: SpyXXGetParentOptionsType) => Promise<string>;
+
+    /**
+     * 获取 spyXX 内置的 elmGetter
+     * 注意: 这个版本的 elmGetter 不是原版
+     * 这个版本的 elmGetter 支持获取 shadowDom 内部的元素
+     * 同时我重构了代码, 添加了 TS 支持, 你可以翻 spyXX 项目源码, 直接拷贝出去用
+     * 详情请查看 elmGetter 水果玉米修改版: https://bbs.tampermonkey.net.cn/thread-8183-1-1.html
+     */
+    getElmGetter: () => CSSElmGetterType;
 }
 
 declare global {

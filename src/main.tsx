@@ -6,6 +6,7 @@ import { CornApp } from "@/components/CornApp";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
 import {ISpyXX, SpyXXGetParentOptionsType, ISpyXXGetSelectorOptionsType} from "@/types/global";
 import { StyleSheetManager } from "styled-components";
+import {elmGetter} from "@/utils/elmGetter.ts";
 
 function renderDialog(dialogFactory: (shadowRoot: ShadowRoot) => React.ReactNode) {
     // 创建一个容器元素
@@ -77,6 +78,9 @@ const spyXX: ISpyXX = {
             ...options
         });
     },
+    getElmGetter() {
+        return elmGetter;
+    }
 };
 
 window.spyXX = spyXX;

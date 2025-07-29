@@ -16,10 +16,12 @@
 
 
   <div id="result">
-    最终选择结果: 
+    最终选择结果:
   </div>
 
-  <script>
+  <script type="module">
+    import {getSpyxx} from "./shared.mjs";
+
     async function main() {
       let resultEl = document.querySelector("#result");
 
@@ -45,25 +47,6 @@
     }
 
     main();
-      
-
-    async function getSpyxx() {
-      while (true) {
-        if (!window.spyXX) {
-          await delay();
-        } else {
-          return window.spyXX;
-        }
-      }
-    }
-
-    function delay() {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 200);
-      });
-    }
   </script>
 </body>
 </html>
