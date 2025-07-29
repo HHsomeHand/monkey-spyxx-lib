@@ -62,7 +62,7 @@ export function CornShowToast(
                 unmountOnExit // 退出时卸载组件
                 appear={true}
             >
-                <div ref={toastRef} className="bg-white border-border border-1 border-solid shadow-md rounded-lg p-3 fixed corn-center z-9999">{toastMsg}</div>
+                <div ref={toastRef} className="bg-white border-border border-1 border-solid shadow-md rounded-lg p-3 fixed corn-center z-9999 text-text">{toastMsg}</div>
             </CSSTransition>
         </ShowToastWrapper>
     );
