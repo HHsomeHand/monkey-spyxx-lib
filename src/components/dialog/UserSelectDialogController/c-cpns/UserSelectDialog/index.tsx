@@ -1,15 +1,13 @@
 // src/components/dialog/UserSelectDialog/index.tsx
 
-import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {CSSProperties, memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {clsx} from "clsx";
 import {CornDialog, CornDialogBody, CornDialogContent, CornDialogHeader} from "@/components/ui/dialog-base.tsx";
 import {getSelector} from "@/utils/getSelector.ts";
-import {useDraggableContainerV2} from "@/hooks/useDraggableContainerV2.ts";
 import useWindowEventListener from "@/hooks/useWindowEventListener.ts";
 import {CornButton, OnBtnClickFnTYpe} from "@/components/ui/button-base.tsx";
 import {throttle} from "lodash";
 import {useStateRef} from "@/hooks/useStateRef.ts";
-import useCommittedRef from "@/hooks/useCommittedRef.ts";
 import useMemoRef from "@/hooks/useMemoRef.ts";
 import CornSelectorDisplayer, {
     ISpyxxSelectorDisplayerRef
@@ -19,6 +17,7 @@ import cornMitt from "@/eventBus";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 import { CSSTransition } from 'react-transition-group';
 import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
+import {corn_useDraggableContainer as useDraggableContainer} from "@/hooks/useDraggableContainerV3.ts";
 
 export interface ISpyxxUserSelectDialogProps {
     onResult?: (selector: string) => void;
@@ -36,6 +35,9 @@ export function SpyxxUserSelectDialog(
     )
 }
 
+// =================
+// ==== Dialog =====
+// =================
 export function SpyxxUserSelectDialogWithoutAnimation(
     props:  ISpyxxUserSelectDialogProps
 ) {
@@ -43,31 +45,35 @@ export function SpyxxUserSelectDialogWithoutAnimation(
         title: contextTitle = "请将光标放在目标元素上",
     } = useContext(ParamOptionContext);
 
-    // =================
-    // ==== Dialog =====
-    // =================
+    const [draggableStyle, setDraggableStyle] = useState<CSSProperties>({});
 
-    const dialogRef = useRef<HTMLDivElement>(null);
+    const {draggableProps, innerProps, draggableRef} = useDraggableContainer({
+        onStyleChange(newStyle) {
+            setDraggableStyle({
+                ...draggableStyle,
+                ...newStyle,
+            })
+        }
+    });
 
-    const {bodyRef, containerRef} = useDraggableContainerV2();
     return (
         //  react-transition-group 不兼容 React19
         //  https://github.com/reactjs/react-transition-group/issues/918
         <CSSTransition
-            nodeRef={dialogRef}
+            nodeRef={draggableRef}
             in={props.isShowDialog} // 控制动画触发
             timeout={300} // 动画持续时间（毫秒）
             classNames="dialog" // 动画类名前缀
             unmountOnExit // 退出时卸载组件
             appear={true}
         >
-            <CornDialog ref={mergeRefs(containerRef, dialogRef)}>
+            <CornDialog style={draggableStyle} ref={draggableRef} {...draggableProps}>
                 <CornDialogContent>
                     <CornDialogHeader>
                         {contextTitle}
                     </CornDialogHeader>
 
-                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" ref={bodyRef}>
+                    <CornDialogBody className="flex flex-col gap-3 p-2 relative" {...innerProps}>
                         <DialogBody {...props}/>
                     </CornDialogBody>
                 </CornDialogContent>
