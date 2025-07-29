@@ -7,7 +7,7 @@
 
 [油猴脚本库分享] [给油中开发者的礼物🎁]
 
-这个库可以让你的脚本更加通用. 
+这个库可以让你的脚本更加通用.
 
 增强脚本的复用性!
 
@@ -27,11 +27,11 @@
 
 截图如下：
 
-<img src="./img/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E5%BC%95%E5%AF%BC/1.png" alt="e56dc649983c866bd9325cdacd6f7b2" style="zoom:50%;" />
+<img src="https://scriptcat.org/api/v2/resource/image/eModdjikFqqWR50Q" width="500" />
 
-<img src="./img/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E5%BC%95%E5%AF%BC/2.png" alt="98bb7c7e7250a6562e3daba318b87c6" style="zoom: 25%;" />
+<img src="https://scriptcat.org/api/v2/resource/image/KalH7Hg5BIGaXUDU" width="500" />
 
-![1f6e4d819938173ca8f778ca94a420f](./img/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E5%BC%95%E5%AF%BC/3.png)
+<img src="https://scriptcat.org/api/v2/resource/image/liN144ZCSMSpjQyA" width="1000" />
 
 运行视频链接 B站: https://www.bilibili.com/video/BV1uKgbzMEfj
 
@@ -41,7 +41,7 @@
 
 开源地址: https://github.com/HHsomeHand/monkey-spyxx-lib
 
- 
+
 
 ## 预检一 Preflight TypeScript Basic
 
@@ -99,7 +99,7 @@ function showToast(msg: string, options?: IShowToastOptions = {}) {
 }
 ```
 
-使用 `paramDuration`  而不是 `duration` 的好处, 是规避了变量名冲突的问题. 
+使用 `paramDuration`  而不是 `duration` 的好处, 是规避了变量名冲突的问题.
 
 同时方便后期维护, 和代码阅读.
 
@@ -116,7 +116,7 @@ function showToast(msg: string, options?: IShowToastOptions = {}) {
 接口的概览, `global.d.ts`:
 
 ```ts
-export interface SpyXXGetSelectorOptionsType {
+export interface ISpyXXGetSelectorOptionsType {
     // 对话框标题, 默认值为 "请将光标放在目标元素上"
     title?: string;
 
@@ -169,9 +169,17 @@ export interface SpyXXGetSelectorOptionsType {
     // 返回 true 为排除, 返回 false 为不排除
     // 排除的元素将无法被选中
     matchExcludeFn?: ((el: HTMLElement) => boolean);
+
+    // 是否过滤掉不合法的 css class 或 id 名
+    // 默认为 false
+    // 如果为 true, 则不会将带有非法字符的 class 或 id 名(如<>[]等符号), 添加到最终结果中
+    // 如果为 false, 这些特殊的非法字符会通过 CSS.escape 转义后, 再添加到最终的结果中
+    // 如 .\\<classname\\>, 如果要把最终结果通过 split 转为数组
+    // 这里建议先 split("\\>"), 再 split(">")
+    isFilterInvalidClassOrIdName?: boolean;
 }
 
-export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">
+export type SpyXXGetParentOptionsType = Omit<ISpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">
 
 export interface ISpyXX {
     /**
@@ -181,7 +189,7 @@ export interface ISpyXX {
      * 设计成返回选择器, 是因为油猴开发者需要用 LocalStorage 或是 GM_SetValue 来保存配置
      * 直接返回元素反而不方便, 保存配置
      */
-    getSelector: (options?: SpyXXGetSelectorOptionsType) => Promise<string>;
+    getSelector: (options?: ISpyXXGetSelectorOptionsType) => Promise<string>;
 
     /**
      * 让用户选择 selector 的父元素
@@ -202,7 +210,7 @@ export {};
 
 ```
 
-### to feel, not to think 
+### to feel, not to think
 
 > “to feel, not to think.”（去感受，而非思考。）—— 李小龙
 >
@@ -253,7 +261,7 @@ export interface ISpyXX {
 // @description  learn spyxx
 // @author       qq2402398917
 // @match        *://*/*
-// @require      https://scriptcat.org/lib/3847/1.0.6/spyxx-lib.js
+// @require https://scriptcat.org/lib/3847/1.0.7/spyxx-lib.js
 // ==/UserScript==
 
 async function main() {
@@ -333,8 +341,7 @@ export default defineConfig({
         icon: 'https://vitejs.dev/logo.svg',
         match: ['*://*/*'],
         require: [
-          'https://scriptcat.org/lib/3847/1.0.6/spyxx-lib.js',
-
+          'https://scriptcat.org/lib/3847/1.0.7/spyxx-lib.js',
           'https://scriptcat.org/lib/2847/3.0.2/ElementGetter%20%E6%B0%B4%E6%9E%9C%E7%8E%89%E7%B1%B3%20%E9%AD%94%E6%94%B9%E7%89%88.js',
           util.dataUrl(`window.elmGetter=elmGetter`),
         ], // END of require
@@ -359,7 +366,7 @@ console.log(win.elmGetter);
 
 > 参考引用 issue01:
 >
-> vite-plugin-monkey 在 pnpm run dev 模式下, 会直接把我们的脚本, 利用 script 注入到页面, 这里的 window 是实际页面的 window. 
+> vite-plugin-monkey 在 pnpm run dev 模式下, 会直接把我们的脚本, 利用 script 注入到页面, 这里的 window 是实际页面的 window.
 >
 > 而 require 的 spyxx 库, 会把 spyxx 放到 window 上, 这里的 window 是 unsafeWindow, 也就是油猴的 window
 >
@@ -371,7 +378,7 @@ console.log(win.elmGetter);
 >
 > issue: https://github.com/lisonge/vite-plugin-monkey/issues/113
 
-
+==== 我是分隔符 ====
 
 > 参考引用 issue02:
 >
@@ -381,7 +388,7 @@ console.log(win.elmGetter);
 >
 > issue 地址: https://github.com/lisonge/vite-plugin-monkey/issues/149
 >
-> 解决方案: 
+> 解决方案:
 >
 > ```
 > import {monkeyWindow} from "vite-plugin-monkey/dist/client";
@@ -395,7 +402,7 @@ console.log(win.elmGetter);
 
 浏览器是一个庞大且复杂的系统, 是一套非常强大且灵活的渲染引擎, 可是代价是什么呢?
 
-<img src="./img/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E5%BC%95%E5%AF%BC/4.png" alt="30bfe34e1eca1b901dcc820cd6df5db" style="zoom:50%;" />
+<img src="https://scriptcat.org/api/v2/resource/image/iimJS6mGHNxIDpCe" width="500" />
 
 代价就是实在是太复杂了.
 
@@ -406,7 +413,7 @@ html 中, id 使用数字开头, 是不会报错的, 可以正常解析和渲染
 ```html
     <label for="33">i am label</label>
 
-    <input id="33"/>
+<input id="33"/>
 ```
 
 点击 `i am label` 可以正常聚焦到 `input` 上
@@ -428,17 +435,17 @@ Uncaught SyntaxError: Failed to execute 'querySelector' on 'Document': '#33' is 
 
 ```html
 <style>
-  :root {
-    --color-current: skyblue;
-  }
+    :root {
+        --color-current: skyblue;
+    }
 
-  .bg-\[--color-current\] {
-    background-color: var(--color-current);
-  }
+    .bg-\[--color-current\] {
+        background-color: var(--color-current);
+    }
 </style>
 
 <div class="bg-[--color-current]">
-  我是海豹
+    我是海豹
 </div>
 ```
 
@@ -456,7 +463,7 @@ console.log(document.querySelector(".bg-\\[--color-current\\]")); // 元素
 
 各种陷阱, 非常荒唐.
 
-1. `CSS.escape` 可以把非法 类名 或 id 名, 变成合法名字, 但是传入的字符串不可以包含 `.` `#`
+1. `CSS.escape` 可以把非法 类名 或 id 名, 变成合法名字, 但是传入的字符串不可以包含开头的 `.` `#`
 
 2. 传入的字符串, 不是用转义字符转义, 而是要传入`\`字符, 所以要用 `\\`
 
@@ -464,11 +471,11 @@ console.log(document.querySelector(".bg-\\[--color-current\\]")); // 元素
 
 ```html
 <body>
-    <div class="tag">content</div>
-    <span></span>
-    <div class="tag">请找到我</div>
+<div class="tag">content</div>
+<span></span>
+<div class="tag">请找到我</div>
 
-    <script src="./script.js"></script>
+<script src="./script.js"></script>
 </body>
 ```
 
@@ -498,10 +505,10 @@ spyxx 需要处理这些奇葩的边界情况, 当然还有很多的 edge case (
 > 写代码也是一样，好的代码是调出来的，完美的接口设计并不存在，除非开发者可以预知未来。
 >
 > 兵来将挡、水来土掩，代码的鲁棒性和健壮性都是在遵循当前最佳实践的前提下，不断地调试和试错，慢慢改出来的。
->
-> ===========
 
-> 最后一个 spyXX 没有解决的边界情况: 
+==== 我是分隔符 ====
+
+> 最后一个 spyXX 没有解决的边界情况:
 >
 > spyXX 无法选中 shadowDOM 内的子元素, 东方永页机也没处理这种边界情况.
 >
