@@ -1,10 +1,11 @@
-type CancelFn = () => void;
-type CancelFnArrType = CancelFn[];
+type CancelFnType = () => void;
+type CancelFnArrType = CancelFnType[];
 
-export class CancelFnArr {
+// C 为 class 前缀, 这里不是打错了
+export class CCancelFnArr {
     constructor(public arr: CancelFnArrType = []) {}
 
-    push(fn: CancelFn) {
+    push(fn: CancelFnType) {
         return this.arr.push(fn);
     }
 
@@ -21,4 +22,4 @@ export class CancelFnArr {
     }
 }
 
-export default CancelFnArr;
+export default CCancelFnArr;

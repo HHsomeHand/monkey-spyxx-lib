@@ -1,6 +1,6 @@
 import {makeDraggableInContainer, IMakeDraggableInContainerProps} from "@/utils/makeDraggableInContainer.ts";
 import {useEffect, useRef} from "react";
-import CancelFnArr from "@/class/CancelFnArr.ts";
+import CCancelFnArr from "@/class/CCancelFnArr.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
 
 export function useDraggableContainer(options: IMakeDraggableInContainerProps = {}) {
@@ -9,7 +9,7 @@ export function useDraggableContainer(options: IMakeDraggableInContainerProps = 
     const innerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const cancelFnArr = new CancelFnArr();
+        const cancelFnArr = new CCancelFnArr();
 
         if (!draggableRef.current) return;
 

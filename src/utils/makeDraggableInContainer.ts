@@ -1,6 +1,6 @@
 import {makeDraggable, setElmTranslate} from "@/utils/makeDraggableV2.ts";
 import {throttle} from "lodash";
-import CancelFnArr from "@/class/CancelFnArr.ts";
+import CCancelFnArr from "@/class/CCancelFnArr.ts";
 import makeEventListener from "@/utils/makeEventListener.ts";
 
 export interface IMakeDraggableInContainerProps {
@@ -75,7 +75,7 @@ export function makeDraggableInContainer(
         }
     };
 
-    let cancelFnArr = new CancelFnArr();
+    let cancelFnArr = new CCancelFnArr();
 
 
     function onSizeChange() {
