@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="33">
+    id 为 33 的元素
+  </div>
+
+  <div class="[--tw-var]">
+    class 为 tw-var 的元素
+  </div>
+
+
+  <div id="result">
+    最终选择结果: 
+  </div>
+
+  <script>
+    async function main() {
+      let resultEl = document.querySelector("#result");
+
+      const spyXX = await getSpyxx();
+
+      // const selector = await spyXX.getSelector();
+      const selector = await spyXX.getSelector({
+        isFilterInvalidClassOrIdName: true
+      });
+
+
+      let resultStr = `最终选择结果: ${selector} <br/>`;
+
+      const el = document.querySelector(selector);
+
+      if (el) {
+        resultStr += " 找到了 El, 选择器正确 <br/>"
+      } else {
+        resultStr += " 找不到 El, 选择器错误 <br/>"
+      }
+
+      resultEl.innerHTML = resultStr;
+    }
+
+    main();
+      
+
+    async function getSpyxx() {
+      while (true) {
+        if (!window.spyXX) {
+          await delay();
+        } else {
+          return window.spyXX;
+        }
+      }
+    }
+
+    function delay() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 200);
+      });
+    }
+  </script>
+</body>
+</html>

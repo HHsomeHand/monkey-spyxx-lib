@@ -1,4 +1,4 @@
-export interface SpyXXGetSelectorOptionsType {
+export interface ISpyXXGetSelectorOptionsType {
     // 对话框标题, 默认值为 "请将光标放在目标元素上"
     title?: string;
 
@@ -51,9 +51,17 @@ export interface SpyXXGetSelectorOptionsType {
     // 返回 true 为排除, 返回 false 为不排除
     // 排除的元素将无法被选中
     matchExcludeFn?: ((el: HTMLElement) => boolean);
+
+    // 是否过滤掉不合法的 css class 或 id 名
+    // 默认为 false
+    // 如果为 true, 则不会将带有非法字符的 class 或 id 名(如<>[]等符号), 添加到最终结果中
+    // 如果为 false, 这些特殊的非法字符会通过 CSS.escape 转义后, 再添加到最终的结果中
+    // 如 .\\<classname\\>, 如果要把最终结果通过 split 转为数组
+    // 这里建议先 split("\\>"), 再 split(">")
+    isFilterInvalidClassOrIdName?: boolean;
 }
 
-export type SpyXXGetParentOptionsType = Omit<SpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">
+export type SpyXXGetParentOptionsType = Omit<ISpyXXGetSelectorOptionsType, "initSelector" | "isShowInductor" | "initPauseState" | "isShowPauseState">
 
 export interface ISpyXX {
     /**
@@ -63,7 +71,7 @@ export interface ISpyXX {
      * 设计成返回选择器, 是因为油猴开发者需要用 LocalStorage 或是 GM_SetValue 来保存配置
      * 直接返回元素反而不方便, 保存配置
      */
-    getSelector: (options?: SpyXXGetSelectorOptionsType) => Promise<string>;
+    getSelector: (options?: ISpyXXGetSelectorOptionsType) => Promise<string>;
 
     /**
      * 让用户选择 selector 的父元素

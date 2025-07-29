@@ -100,6 +100,7 @@ function DialogBody(
         matchExcludeFn: contextMatchExcludeFn = undefined,
         cancelBtnText: contextCancelBtnText = "取消",
         isShowCancelBtn: contextIsShowCancelBtn = true,
+        isFilterInvalidClassOrIdName: contextIsFilterInvalidClassOrIdName = false
     } = useContext(ParamOptionContext);
 
     function matchExcludeFn(el: HTMLElement) {
@@ -264,7 +265,7 @@ function DialogBody(
             return [];
         }
 
-        return getSelector(currSelectedEl, matchExcludeFn).pathArray;
+        return getSelector(currSelectedEl, matchExcludeFn, contextIsFilterInvalidClassOrIdName).pathArray;
     }, [currSelectedEl], (arr) => (arr.length > 0) && isPauseSelected, []);
 
     // 实现鼠标移动选中元素

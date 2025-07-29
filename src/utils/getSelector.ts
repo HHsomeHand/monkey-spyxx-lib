@@ -1,27 +1,28 @@
 export function getSelector(
     element: Element,
-    matchExcludeFn?: ((el: HTMLElement) => boolean)
+    matchExcludeFn?: ((el: HTMLElement) => boolean),
+
+    // 是否过滤掉不合法的 css class 或 id 名
+    isFilterInvalidClassOrIdName = false
 ) {
     const path = [];
     let current: Element | null = element;
 
     while (current !== null && current !== document.documentElement) {
-        let isContinue = false;
-
         if (matchExcludeFn && matchExcludeFn(current as HTMLElement)) {
-            isContinue = true;
-        }
-
-        if (isContinue) {
             current = current.parentElement;
             continue;
         }
 
         let selector = current.tagName.toLowerCase();
 
-        if (current.id && isValidCssId(current.id)) {
-            // ID 选择器（即 #xxx）必须以字母或下划线开头
-            selector += `#${current.id}`;
+        if (current.id) {
+            if (isFilterInvalidClassOrIdName && !isValidCssId(current.id)) {
+                // isFilterInvalidClassOrIdName 为 true 且 ID 不合法
+            } else {
+                // ID 选择器（即 #xxx）必须以字母或下划线开头
+                selector += `#${CSS.escape(current.id)}`;
+            }
         } else {
             let isHTMLElement = current instanceof HTMLElement;
 
@@ -29,14 +30,20 @@ export function getSelector(
 
             // 只有 HtmlElement 才有类名, SVG 这种 Element 获取类名是一个 object, 行为不正常
             if (isHTMLElement && current.className) {
-                const classes = String(current.className)
+                let classesArr = String(current.className)
                     .split(' ')
-                    .filter(c => c)
-                    .filter(c => !isClassNameInvalid(c))
-                    .join('.');
+                    .filter(c => c);
 
-                if (classes) {
-                    selector += `.${classes}`;
+                if (isFilterInvalidClassOrIdName) {
+                    classesArr = classesArr.filter(c => !isClassNameInvalid(c))
+                } else {
+                    classesArr = classesArr.map(c => CSS.escape(c));
+                }
+
+                let classesStr: string = classesArr.join('.');
+
+                if (classesStr) {
+                    selector += `.${classesStr}`;
                 }
 
                 isElHasClassName = true;

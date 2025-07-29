@@ -7,13 +7,13 @@ import {ShowToastOptions} from "@/types/eventBus.ts";
 import CornAppWrapper from "./style.ts";
 import {CSSTransition} from "react-transition-group";
 import CornShowToast from "./c-cpns/ShowToast";
-import {SpyXXGetSelectorOptionsType} from "@/types/global";
+import {ISpyXXGetSelectorOptionsType} from "@/types/global";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 
 interface CornAppProps {
     className?: string;
     children?: React.ReactNode;
-    paramOptions: SpyXXGetSelectorOptionsType,
+    paramOptions: ISpyXXGetSelectorOptionsType,
 }
 
 export function CornApp(props: CornAppProps) {

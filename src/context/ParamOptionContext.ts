@@ -1,8 +1,8 @@
 // src/eventBus/ParamOptionContext.ts
 
 import {createContext} from "react";
-import {SpyXXGetSelectorOptionsType} from "@/types/global";
+import {ISpyXXGetSelectorOptionsType} from "@/types/global";
 
-export const ParamOptionContext = createContext<SpyXXGetSelectorOptionsType>({});
+export const ParamOptionContext = createContext<ISpyXXGetSelectorOptionsType>({});
 
 export default ParamOptionContext;

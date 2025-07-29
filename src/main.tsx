@@ -4,7 +4,7 @@ import { cornDebugModeHint } from "@/assets/ascii-art/debug-mode-hint.ts";
 import globalCSSContent from "@/assets/css/global.css?inline";
 import { CornApp } from "@/components/CornApp";
 import {UserSelectDialogController} from "@/components/dialog/UserSelectDialogController";
-import {ISpyXX, SpyXXGetParentOptionsType, SpyXXGetSelectorOptionsType} from "@/types/global";
+import {ISpyXX, SpyXXGetParentOptionsType, ISpyXXGetSelectorOptionsType} from "@/types/global";
 import { StyleSheetManager } from "styled-components";
 
 function renderDialog(dialogFactory: (shadowRoot: ShadowRoot) => React.ReactNode) {
@@ -34,7 +34,7 @@ function renderDialog(dialogFactory: (shadowRoot: ShadowRoot) => React.ReactNode
 }
 
 const spyXX: ISpyXX = {
-    async getSelector(options: SpyXXGetSelectorOptionsType = {}) {
+    async getSelector(options: ISpyXXGetSelectorOptionsType = {}) {
         return new Promise((resolve) => {
             function onResult(result: string) {
                 clearFn();
@@ -281,6 +281,4 @@ if (import.meta.env.MODE === "development") {
             }, 3000);
         }
     }
-
-    testAdBlockStep();
 }
