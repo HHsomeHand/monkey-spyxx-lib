@@ -10,13 +10,13 @@ import CornShowToast from "./c-cpns/ShowToast";
 import {SpyXXGetSelectorOptionsType} from "@/types/global";
 import ParamOptionContext from "@/context/ParamOptionContext.ts";
 
-interface ICornAppProps {
+interface CornAppProps {
     className?: string;
     children?: React.ReactNode;
     paramOptions: SpyXXGetSelectorOptionsType,
 }
 
-export function CornApp(props: ICornAppProps) {
+export function CornApp(props: CornAppProps) {
     return (
         <ParamOptionContext.Provider value={props.paramOptions}>
             <CornAppWrapper className={clsx(props.className, "corn-app")}>

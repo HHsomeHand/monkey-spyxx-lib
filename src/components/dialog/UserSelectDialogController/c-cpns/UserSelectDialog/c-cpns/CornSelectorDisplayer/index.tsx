@@ -3,19 +3,19 @@ import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {memo} from "react";
 import {CornButton} from "@/components/ui/button-base.tsx";
 
-export interface ISpyxxSelectorDisplayerRef {
+export interface SpyxxSelectorDisplayerRef {
     getSelector(): string;
 }
 
-interface ISpyxxSelectorDisplayerProps {
+interface SpyxxSelectorDisplayerProps {
     className?: string,
     currSelectorArr: string[],
     onCurrElChange: (el: HTMLElement) => void,
-    ref: React.MutableRefObject<ISpyxxSelectorDisplayerRef | undefined>
+    ref: React.MutableRefObject<SpyxxSelectorDisplayerRef | undefined>
 }
 
 export function SpyxxSelectorDisplayer(
-    props: ISpyxxSelectorDisplayerProps
+    props: SpyxxSelectorDisplayerProps
 ) {
     let {
         currSelectorArr: propCurrSelectorArr,
