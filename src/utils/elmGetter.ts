@@ -121,7 +121,7 @@ export const elmGetter = function () {
             parent: paramParent,
         } = options;
 
-        if (!(paramParent instanceof Element)) return null;
+        if (!(paramParent instanceof Element) && !(paramParent instanceof Document)) return null;
 
         switch (paramCurMode) {
             case 'css': {
@@ -132,16 +132,16 @@ export const elmGetter = function () {
                     return matches.call(paramParent, selector) ? paramParent : null;
                 }
 
-                const checkParent = paramParent !== paramRoot && matches.call(parent, selector);
+                const checkParent = paramParent !== paramRoot && matches.call(paramParent, selector);
 
                 return checkParent ? paramParent : paramParent.querySelector(selector);
             }
             case 'jquery': {
                 if (paramReason === 'attr') {
-                    return $(paramParent).is(selector) ? $(paramParent) : null;
+                    return $(paramParent).is(selector) ? $(paramParent as any) : null;
                 }
 
-                const jNodes: any = $(paramParent !== paramRoot ? parent : [])
+                const jNodes: any = $(paramParent !== paramRoot ? paramParent : [])
                     .add([...paramParent.querySelectorAll('*')]).filter(selector);
 
                 return jNodes.length ? $(jNodes.get(0)) : null;
@@ -170,7 +170,7 @@ export const elmGetter = function () {
             parent: paramParent,
         } = options;
 
-        if (!(paramParent instanceof Element)) return [];
+        if (!(paramParent instanceof Element) && !(paramParent instanceof Document)) return [];
 
         switch (paramCurMode) {
             case 'css': {
@@ -180,7 +180,7 @@ export const elmGetter = function () {
                 return checkParent ? [paramParent, ...result] : [...result];
             }
             case 'jquery': {
-                if (paramReason === 'attr') return $(paramParent).is(selector) ? [$(paramParent)] : [];
+                if (paramReason === 'attr') return $(paramParent).is(selector) ? [$(paramParent as any)] : [];
                 const jNodes = $(paramParent !== paramRoot ? paramParent : []).add([...paramParent.querySelectorAll('*')]).filter(selector);
                 return $.map(jNodes, el => $(el as any));
             }
@@ -326,11 +326,11 @@ export const elmGetter = function () {
             // 经过上面的处理, l_options.parent 一定会是 Element | Document, 所以 IGetOne 是安全的
             if (Array.isArray(selectorOrSelectors)) {
                 let selectors = selectorOrSelectors;
-                return Promise.all(selectors.map(s => getOne(s, options as IGetOne)));
+                return Promise.all(selectors.map(s => getOne(s, localOptions as IGetOne)));
             }
 
             let selector = selectorOrSelectors;
-            return getOne(selector, options as IGetOne);
+            return getOne(selector, localOptions as IGetOne);
         },
 
 
@@ -354,7 +354,7 @@ export const elmGetter = function () {
          *
          * @return void
          */
-        each(selector, callback, options: IEachOptions) {
+        each(selector, callback, options: IEachOptions = {}) {
             let {
                 parent: _paramParent = doc,
             } = options;

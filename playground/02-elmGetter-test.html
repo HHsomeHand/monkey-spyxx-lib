@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div id="id-container">
+        id container
+    </div>
+
+    <div class="class-container">
+        class container
+    </div>
+
+    <button onclick="addComment()">addComment</button>
+
+    <ul class="comments">
+        <li class="comment">第1条评论</li>
+    </ul>
+
+    <div class="app"></div>
+
+    <script>
+        setTimeout(() => {
+            const appElement = document.querySelector('.app');
+
+            const pElement = document.createElement('p');
+
+            pElement.className = 'child';
+
+            pElement.textContent = 'child';
+
+            appElement.appendChild(pElement);
+        }, 1000);
+
+        function addComment() {
+            const commentsEl = document.querySelector('.comments');
+
+            const liElement = document.createElement('li');
+
+            liElement.className = 'comment';
+
+            liElement.textContent = `第${commentsEl.children.length + 1}条评论`;
+
+            commentsEl.appendChild(liElement);
+        }
+    </script>
+
+    <script type="module">
+        import {getSpyxx} from "./shared.mjs";
+
+        async function main() {
+
+
+            const spyxx = await getSpyxx();
+
+            const elmGetter = spyxx.getElmGetter();
+
+            elmGetter.each(".comment", (el) => console.log(".comment", el));
+
+            console.log("app > child", await elmGetter.get(".app > .child"));
+
+            console.log("id-container", await elmGetter.get("#id-container"));
+
+            console.log("class-container", await elmGetter.get(".class-container"));
+
+
+        }
+
+        main();
+    </script>
+</body>
+</html>
