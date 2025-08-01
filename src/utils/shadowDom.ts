@@ -1,38 +1,35 @@
 // src/utils/shadowDom.ts
 
-
 export function shadowDomQuerySelector(
     selector: string,
     parent: Element | Document
 ): Element | null {
-    const selectors = selector.split('[[shadow-host]]');
+    const selectors = selector
+        .split('[[shadow-host]]')
+        // 去掉这玩意: '   > '
+        .map(selector => selector.replace(/^\s*>/, ''));
 
-    const el = parent.querySelector(selectors[0]);
+    let current: Element | Document | ShadowRoot | null = parent;
 
-    if (!el || !hasShadowRoot(el)) {
-        return el;
-    }
+    for (let i = 0; i < selectors.length; i++) {
+        const curSelector = selectors[i];
 
-    if (selectors.length !== 1) {
-        let shadowRoot = el.shadowRoot;
+        current = (current as Element).querySelector(curSelector);
 
-        for (let i = 1; i < selectors.length; i++) {
-            let currSelector = selectors[i];
+        if (!current) return null;
 
-            // 去掉这玩意: '   > '
-            currSelector = currSelector.replace(/^\s*>/, '');
-            let shadowHost = (shadowRoot as ShadowRoot).querySelector(currSelector);
-
-            console.log(currSelector, shadowHost);
-            if (!shadowHost || !hasShadowRoot(shadowHost)) {
-                return shadowHost;
-            } else {
-                shadowRoot = shadowHost.shadowRoot;
+        if (i !== selectors.length - 1) {
+            if (!hasShadowRoot(current)) {
+                return null;
             }
+        } else {
+            return current;
         }
+
+        current = current.shadowRoot;
     }
 
-    return el;
+    return null;
 }
 
 function hasShadowRoot(element: Element) {

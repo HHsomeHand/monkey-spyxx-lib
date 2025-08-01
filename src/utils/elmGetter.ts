@@ -166,10 +166,9 @@ export const elmGetter = function () {
 
         switch (paramCurMode) {
             case 'css': {
-                if (paramReason === 'attr') return matches.call(paramParent, selector) ? [paramParent] : [];
-                const checkParent = paramParent !== paramRoot && matches.call(paramParent, selector);
                 const result = paramParent.querySelectorAll(selector);
-                return checkParent ? [paramParent, ...result] : [...result];
+                // result 是伪数组, 得解开才能使用
+                return [...result];
             }
             case 'jquery': {
                 if (paramReason === 'attr') return $(paramParent).is(selector) ? [$(paramParent as any)] : [];
