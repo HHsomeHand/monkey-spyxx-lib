@@ -177,9 +177,10 @@ function DialogBody(
     }, []);
 
     // 实现小方块的圆角大小的保存和恢复
-    useEffect(() => {
-        if (!currSelectedEl) return;
+    const setTelescopePosFn = useCallback(() => {
+        const currSelectedEl = getCurrSelectedEl();
 
+        if (!currSelectedEl) return;
 
         const telescopeEl = telescopeElRef.current;
 
@@ -202,7 +203,15 @@ function DialogBody(
         telescopeEl.style.borderTopRightRadius = style.borderTopRightRadius;
         telescopeEl.style.borderBottomRightRadius = style.borderBottomRightRadius;
         telescopeEl.style.borderBottomLeftRadius = style.borderBottomLeftRadius;
+    }, []);
+
+    useEffect(() => {
+        setTelescopePosFn();
     }, [currSelectedEl]);
+
+    useWindowEventListener("scroll", throttle(() => {
+        setTelescopePosFn();
+    }, 100));
 
     useEffect(() => {
         if (!props.isShowDialog && telescopeElRef.current) {
