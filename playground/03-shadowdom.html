@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nested Shadow DOM</title>
+</head>
+<body>
+<nested-one></nested-one>
+
+<script type="module">
+    // 定义第一层组件
+    import {getSpyxx} from "./shared.mjs";
+
+    class NestedOne extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({ mode: 'open' });
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "nested-one";
+            wrapper.textContent = 'This is NestedOne (Shadow Root 1)';
+
+            const nestedTwo = document.createElement('nested-two');
+
+            shadow.appendChild(wrapper);
+            shadow.appendChild(nestedTwo);
+        }
+    }
+    customElements.define('nested-one', NestedOne);
+
+    // 定义第二层组件
+    class NestedTwo extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({ mode: 'open' });
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "nested-two";
+            wrapper.textContent = 'This is NestedTwo (Shadow Root 2)';
+
+            const nestedThree = document.createElement('nested-three');
+
+            shadow.appendChild(wrapper);
+            shadow.appendChild(nestedThree);
+        }
+    }
+    customElements.define('nested-two', NestedTwo);
+
+    // 定义第三层组件
+    class NestedThree extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({ mode: 'open' });
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "nested-three";
+            wrapper.textContent = 'This is NestedThree (Shadow Root 3)';
+
+            shadow.appendChild(wrapper);
+        }
+    }
+    customElements.define('nested-three', NestedThree);
+
+
+    async function main() {
+        const spyXX = await getSpyxx();
+
+        const elmGetter = spyXX.getElmGetter();
+
+        elmGetter.timeout = 3000;
+
+        elmGetter.isPending = false;
+
+        const result = await elmGetter.get("nested-one[[shadow-host]] > nested-two[[shadow-host]] > nested-three[[shadow-host]] > .nested-three");
+
+    }
+
+    main();
+</script>
+</body>
+</html>

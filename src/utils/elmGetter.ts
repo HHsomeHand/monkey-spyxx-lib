@@ -6,6 +6,7 @@
 // @version      3.0.2 - spyxx fork
 // ==/UserScript==
 import {CSSElmGetterType, IElmGetter, IGetOptions, ModeType, ResultType} from "@/types/elmGetter";
+import {shadowDomQuerySelector} from "@/utils/shadowDom.ts";
 
 type WindowType = typeof window;
 
@@ -125,16 +126,7 @@ export const elmGetter = function () {
 
         switch (paramCurMode) {
             case 'css': {
-                if (paramReason === 'attr') {
-                    // 这里担心 parent 属性变化后, "parent 的 selector" 和 目标 selector 一致
-                    // 所以需要对 parent 做 matches 判断
-                    // 毕竟 parent.querySelector(selector) 是查询不到自身的
-                    return matches.call(paramParent, selector) ? paramParent : null;
-                }
-
-                const checkParent = paramParent !== paramRoot && matches.call(paramParent, selector);
-
-                return checkParent ? paramParent : paramParent.querySelector(selector);
+                return shadowDomQuerySelector(selector, paramParent);
             }
             case 'jquery': {
                 if (paramReason === 'attr') {
