@@ -93,7 +93,12 @@ export function makeDraggableInContainer(
     // 开始监听目标元素
     resizeObserver.observe(draggableEl);
 
-    if (optionContainerEl instanceof Window) {
+    // 这里用 optionContainerEl === window 是因为 optionContainerEl 可能为 window 的 proxy
+    // window 的 proxy instanceof Window 是 false
+    if (
+        optionContainerEl === window ||
+        optionContainerEl instanceof Window
+    ) {
         const cancelFn = makeEventListener("resize", onSizeChange);
 
         cancelFnArr.push(cancelFn);
