@@ -37,7 +37,13 @@ export function makeDraggableInContainer(
 
         // 获取父元素边界
         let rect: DOMRect;
-        if (optionContainerEl instanceof Window) {
+
+        // 这里用 optionContainerEl === window 是因为 optionContainerEl 可能为 window 的 proxy
+        // window 的 proxy instanceof Window 是 false
+        if (
+            optionContainerEl === window ||
+            optionContainerEl instanceof Window
+        ) {
             rect = getWindowBoundingClientRect();
         } else {
             rect = optionContainerEl.getBoundingClientRect();

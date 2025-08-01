@@ -10,7 +10,7 @@ import tailwindcss from "@tailwindcss/vite";
 let userscript: MonkeyUserScript = {
     namespace: "npm/vite-plugin-monkey",
     author: "QQ2402398917",
-    version: "1.1.8",
+    version: "1.1.9",
     license: "MIT",
 };
 
