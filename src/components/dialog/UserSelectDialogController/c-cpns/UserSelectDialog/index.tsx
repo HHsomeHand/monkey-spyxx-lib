@@ -158,6 +158,13 @@ function DialogBody(
         processInitSelector()
     }, []);
 
+    useEffect(() => {
+        if (!contextOnCurrSelectChange) return;
+        if (!currSelectedEl) return;
+
+        return contextOnCurrSelectChange(currSelectedEl);
+    }, [currSelectedEl]);
+
     // >>>>>>>>>>>>>>>
     // == telescope
     // ==============
