@@ -19,6 +19,7 @@ import ParamOptionContext from "@/context/ParamOptionContext.ts";
 import { CSSTransition } from 'react-transition-group';
 import SpyxxUserSelectDialogAnimation from "@/components/dialog/UserSelectDialogController/c-cpns/UserSelectDialog/style.ts";
 import {useDraggableContainer} from "@/hooks/useDraggableContainer.ts";
+import {elmGetter} from "@/utils/elmGetter.ts";
 
 export interface SpyxxUserSelectDialogProps {
     onResult?: (selector: string) => void;
@@ -117,6 +118,7 @@ function DialogBody(
         return contextMatchExcludeFn(el);
     }
 
+    // getCurrSelectedEl 是给 useCallback 内部使用的 getter
     const [currSelectedEl, private_setCurrSelectedEl, getCurrSelectedEl] = useStateRef<HTMLElement | null>(null);
 
     // 对 private_setCurrSelectedEl 进行封装, 避免选到对话框上的元素
@@ -138,21 +140,28 @@ function DialogBody(
 
     // 处理 contextInitSelector
     useEffect(() => {
-        if (contextInitSelector === "") {
-            return ;
+        async function processInitSelector() {
+            if (contextInitSelector === "") {
+                return ;
+            }
+
+            const el = await elmGetter.get(contextInitSelector);
+
+            if (!el) {
+                console.log("spyxx: 传入的 initSelector 无效");
+
+                return;
+            }
+
+            setCurrSelectedEl(el as HTMLElement);
         }
 
-        const el = document.querySelector(contextInitSelector);
-
-        if (!el) {
-            console.log("spyxx: 传入的 initSelector 无效");
-
-            return;
-        }
-
-        setCurrSelectedEl(el as HTMLElement);
+        processInitSelector()
     }, []);
 
+    // >>>>>>>>>>>>>>
+    // == shadowBox
+    // ==============
     useEffect(() => {
         if (!contextOnCurrSelectChange) return;
         if (!currSelectedEl) return;
@@ -198,7 +207,13 @@ function DialogBody(
             clearInterval(id);
         }
     }, []);
+    // ==================
+    // == End shadowBox
+    // <<<<<<<<<<<<<<<<<<
 
+    // >>>>>>>>>>>>>>>
+    // == telescope
+    // ==============
     const telescopeElRef = useRef<HTMLDivElement>();
 
     // 创建 telescopeElRef
@@ -251,6 +266,9 @@ function DialogBody(
             telescopeElRef.current.style.opacity = "0";
         }
     }, [props.isShowDialog]);
+    // ==============
+    // == End telescope
+    // <<<<<<<<<<<<<<<
 
     const [isPauseSelected, setIsPauseSelected, getIsPauseSelected] = useStateRef(contextInitPauseState);
 
@@ -260,26 +278,45 @@ function DialogBody(
         })
     }, [isPauseSelected]);
 
-    const [currSelectorArr, getCurrSelectorArr] = useMemoRef<string[]>(() => {
-        if (!currSelectedEl) {
-            return [];
+    const [currSelectorArr, setCurrSelectorArr] = useState<string[]>([]);
+
+    useEffect(() => {
+        // 暂停选择了, 就不修改 currSelectorArr
+        if ((currSelectorArr.length > 0) && isPauseSelected) {
+            return;
         }
 
-        return getSelector(currSelectedEl, matchExcludeFn, contextIsFilterInvalidClassOrIdName).pathArray;
-    }, [currSelectedEl], (arr) => (arr.length > 0) && isPauseSelected, []);
+        if (!currSelectedEl) {
+            setCurrSelectorArr([]);
+            return;
+        }
+
+        const l_currSelectorArr = getSelector(
+            currSelectedEl,
+            matchExcludeFn,
+            contextIsFilterInvalidClassOrIdName
+        ).pathArray;
+
+        setCurrSelectorArr(l_currSelectorArr);
+    }, [currSelectedEl]);
 
     // 实现鼠标移动选中元素
-    useWindowEventListener('mousemove', useCallback(throttle((e) => {
+    useWindowEventListener('mousemove', useCallback(throttle((e: MouseEvent) => {
         if (getIsPauseSelected()) {
             return;
         }
 
-        let targetEl = document.elementFromPoint(e.clientX, e.clientY);
+        let targetPathArr = e.composedPath();
 
-        if (!targetEl) {
+        let target = targetPathArr[0];
+
+        if (!target || !(target instanceof Element)) {
             return;
         }
 
+        let targetEl: Element = target;
+
+        // 去除 svg path 等清空
         while (!(targetEl instanceof HTMLElement)) {
             if (!targetEl) {
                 return;

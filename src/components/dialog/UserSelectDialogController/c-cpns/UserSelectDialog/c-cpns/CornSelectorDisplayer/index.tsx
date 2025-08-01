@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {memo} from "react";
 import {CornButton} from "@/components/ui/button-base.tsx";
+import {shadowDomQuerySelector} from "@/utils/shadowDom.ts";
 
 export interface SpyxxSelectorDisplayerRef {
     getSelector(): string;
@@ -52,7 +53,7 @@ export function SpyxxSelectorDisplayer(
 
         if (!selector) return;
 
-        const el = document.querySelector(selector);
+        const el = shadowDomQuerySelector(selector);
 
         if (!el) return;
 

@@ -2,12 +2,13 @@
 
 export function shadowDomQuerySelector(
     selector: string,
-    parent: Element | Document
+    parent: Element | Document = document,
 ): Element | null {
     const selectors = selector
         .split('[[shadow-host]]')
         // 去掉这玩意: '   > '
-        .map(selector => selector.replace(/^\s*>/, ''));
+        .map(selector => selector.replace(/^\s*>/, ''))
+        .filter(selector => selector);
 
     let current: Element | Document | ShadowRoot | null = parent;
 
@@ -63,7 +64,7 @@ export function shadowDomQuerySelectorAll(
     return [...result];
 }
 
-function hasShadowRoot(element: Element) {
+export function hasShadowRoot(element: Element) {
     return element.shadowRoot !== null;
 }
 

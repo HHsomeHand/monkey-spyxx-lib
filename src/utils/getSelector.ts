@@ -1,3 +1,5 @@
+import {hasShadowRoot} from "@/utils/shadowDom.ts";
+
 export function getSelector(
     element: Element,
     matchExcludeFn?: ((el: HTMLElement) => boolean),
@@ -49,7 +51,7 @@ export function getSelector(
                 isElHasClassName = true;
             }
 
-            const siblings = Array.from(current.parentElement!.children);
+            const siblings = Array.from(current.parentNode?.children ?? []);
 
             const sameElIndex = siblings.findIndex(
                 sibling => {
@@ -99,9 +101,23 @@ export function getSelector(
             }
         }
 
+        if (hasShadowRoot(current)) {
+            selector += "[[shadow-host]]";
+        }
+
+        const parentNode = current.parentNode;
+
+        if (parentNode instanceof ShadowRoot) {
+            const shadowRoot = parentNode;
+
+            current = parentNode.host;
+        } else {
+            current = current.parentElement;
+        }
+
         path.unshift(selector);
-        current = current.parentElement;
     }
+
     return {
         selector: path.join(' > '),
         pathArray: path,
