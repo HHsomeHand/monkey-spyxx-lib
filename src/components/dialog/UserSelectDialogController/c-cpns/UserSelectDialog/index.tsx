@@ -94,7 +94,6 @@ function DialogBody(
         initSelector: contextInitSelector = "",
         isShowPauseState: contextIsShowPauseState = true, // 默认显示是否暂停
         isShowInductor: contextIsShowInductor = true, // 默认显示感应器
-        isUseShadow: contextIsUseShadow = false, // 默认使用方块标注
         onCurrSelectElChange: contextOnCurrSelectChange = undefined,
         submitBtnText: contextSubmitBtnText = "提交",
         excludeSelectors: contextExcludeSelectors = [],
@@ -159,58 +158,6 @@ function DialogBody(
         processInitSelector()
     }, []);
 
-    // >>>>>>>>>>>>>>
-    // == shadowBox
-    // ==============
-    useEffect(() => {
-        if (!contextOnCurrSelectChange) return;
-        if (!currSelectedEl) return;
-
-        return contextOnCurrSelectChange(currSelectedEl);
-    }, [currSelectedEl]);
-
-    // 保存选中元素的阴影样式, 方便选中下一个时, 恢复
-    let preBoxShadowRef = useRef("");
-
-    // 实现 shadowBox 的保存与恢复
-    useEffect(() => {
-        if (!contextIsUseShadow) return;
-
-        if (!currSelectedEl) return;
-
-        const savedPreEl = currSelectedEl;
-
-        preBoxShadowRef.current = savedPreEl.style.boxShadow;
-
-        function resetShadow() {
-            savedPreEl.style.boxShadow = preBoxShadowRef.current;
-        }
-
-        return () => {
-            resetShadow();
-        }
-    }, [currSelectedEl]);
-
-    // 设置 shadowBox
-    useEffect(() => {
-        if (!contextIsUseShadow) return;
-
-        const id = setInterval(() => {
-            const l_currSelectedEl = getCurrSelectedEl();
-            if (!l_currSelectedEl) return;
-
-            /* x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
-            l_currSelectedEl.style.boxShadow = "0px 0px 0px 2px red"
-        }, 100);
-
-        return () => {
-            clearInterval(id);
-        }
-    }, []);
-    // ==================
-    // == End shadowBox
-    // <<<<<<<<<<<<<<<<<<
-
     // >>>>>>>>>>>>>>>
     // == telescope
     // ==============
@@ -218,8 +165,6 @@ function DialogBody(
 
     // 创建 telescopeElRef
     useEffect(() => {
-        if (contextIsUseShadow) return;
-
         telescopeElRef.current = document.createElement('div');
 
         telescopeElRef.current.className = "bg-blue-300 opacity-25 fixed transition-all z-99 pointer-events-none"
@@ -233,8 +178,6 @@ function DialogBody(
 
     // 实现小方块的圆角大小的保存和恢复
     useEffect(() => {
-        if (contextIsUseShadow) return;
-
         if (!currSelectedEl) return;
 
 

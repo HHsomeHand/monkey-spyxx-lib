@@ -32,12 +32,6 @@ export interface ISpyXXGetSelectorOptionsType {
     // 初始的选择器, 默认值为 ""
     initSelector?: string;
 
-    // 是否使用 box shadow 标记选中元素, 默认值为 false
-    // 为 false, 则使用方块来标记 当前鼠标选中的元素
-    // 为 true, 则使用 box shadow 标记当前鼠标选中的元素
-    // 推荐使用 false, box shadow 是第一版的代码遗留下来的 legacy, 可能适用于某些特殊场景
-    isUseShadow?: boolean;
-
     // 事件回调, 当光标选择的元素发生变化的时候, 会调用这个回调函数
     // 默认值为 undefined
     // 返回值为清理函数, 在下一次调用 onCurrSelectElChange 前, 会调用清理函数
