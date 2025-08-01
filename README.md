@@ -524,6 +524,8 @@ spyxx 需要处理这些奇葩的边界情况, 当然还有很多的 edge case (
 >
 >我魔改了 elmGetter, 使 elmGetter 支持 shadow DOM 内的搜索, 并将其嵌入到了 spyxx 中, 使用 getElmGetter 便可以获取内置的魔改 elmGetter
 >
+>====
+>
 >注意: 我这里只对 elmGetter 的 css mode 增加了 shadow DOM 搜索支持, 其他模式我也不常用, 所以没修改.
 >
 >同时, 我这里魔改 elmGetter 版本是玉米版的, 我用 TS 重构了 elmGetter
@@ -531,6 +533,18 @@ spyxx 需要处理这些奇葩的边界情况, 当然还有很多的 edge case (
 >elmGetter spyxx.fork.ver 源码: https://github.com/HHsomeHand/monkey-spyxx-lib/blob/main/src/utils/elmGetter.ts
 >
 >相关接口定义请查看: https://github.com/HHsomeHand/monkey-spyxx-lib/tree/main/src/types
+>
+>====
+>
+>我们还扩展了选择器语法, 使用 `[[shadow-host]]` 标记 shadowHost.
+>
+>所以 spyXX 获取的 shadowDom 内的选择器, 请用 spyXX 内置的 elmGetter 查询.
+>
+>选择器的例子:
+>
+>```
+>nested-one[[shadow-host]] > nested-two[[shadow-host]] > nested-three[[shadow-host]] > .nested-three
+>```
 
 ## 尾声2 spyXX
 
