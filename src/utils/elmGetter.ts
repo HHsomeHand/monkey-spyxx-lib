@@ -6,7 +6,7 @@
 // @version      3.0.2 - spyxx fork
 // ==/UserScript==
 import {CSSElmGetterType, IElmGetter, IGetOptions, ModeType, ResultType} from "@/types/elmGetter";
-import {shadowDomQuerySelector} from "@/utils/shadowDom.ts";
+import {shadowDomQuerySelector, shadowDomQuerySelectorAll} from "@/utils/shadowDom.ts";
 
 type WindowType = typeof window;
 
@@ -166,9 +166,7 @@ export const elmGetter = function () {
 
         switch (paramCurMode) {
             case 'css': {
-                const result = paramParent.querySelectorAll(selector);
-                // result 是伪数组, 得解开才能使用
-                return [...result];
+                return shadowDomQuerySelectorAll(selector, paramParent);
             }
             case 'jquery': {
                 if (paramReason === 'attr') return $(paramParent).is(selector) ? [$(paramParent as any)] : [];

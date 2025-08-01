@@ -63,6 +63,10 @@
 
 
     async function main() {
+        testEach();
+    }
+
+    async function testGet() {
         const spyXX = await getSpyxx();
 
         const elmGetter = spyXX.getElmGetter();
@@ -76,6 +80,16 @@
         console.log(result);
     }
 
+    async function testEach() {
+        const spyXX = await getSpyxx();
+
+        const elmGetter = spyXX.getElmGetter();
+
+        elmGetter.each(
+            "nested-one[[shadow-host]] > nested-two[[shadow-host]] > nested-three[[shadow-host]] > .nested-three",
+            (el) => console.log(el)
+        );
+    }
     main();
 </script>
 </body>
