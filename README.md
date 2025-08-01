@@ -148,12 +148,6 @@ export interface ISpyXXGetSelectorOptionsType {
     // 初始的选择器, 默认值为 ""
     initSelector?: string;
 
-    // 是否使用 box shadow 标记选中元素, 默认值为 false
-    // 为 false, 则使用方块来标记 当前鼠标选中的元素
-    // 为 true, 则使用 box shadow 标记当前鼠标选中的元素
-    // 推荐使用 false, box shadow 是第一版的代码遗留下来的 legacy, 可能适用于某些特殊场景
-    isUseShadow?: boolean;
-
     // 事件回调, 当光标选择的元素发生变化的时候, 会调用这个回调函数
     // 默认值为 undefined
     // 返回值为清理函数, 在下一次调用 onCurrSelectElChange 前, 会调用清理函数
@@ -261,7 +255,7 @@ export interface ISpyXX {
 // @description  learn spyxx
 // @author       qq2402398917
 // @match        *://*/*
-// @require https://scriptcat.org/lib/3847/1.0.7/spyxx-lib.js
+// @require https://scriptcat.org/lib/3847/1.1.10/spyxx-lib.js
 // ==/UserScript==
 
 async function main() {
@@ -521,6 +515,22 @@ spyxx 需要处理这些奇葩的边界情况, 当然还有很多的 edge case (
 > 如果是这样, 我得等后面有时间和精力再继续折腾了.
 >
 > 当然如果你有好的想法, 欢迎联系我!
+
+==== 我是分割符 ====
+
+>2025 /08 /01 我已经实现了 "spyXX 搜索 shadowDOM 内元素" 的功能.
+>
+>具体使用示例可以看 adblock demo:  https://scriptcat.org/zh-CN/script-show-page/3851
+>
+>我魔改了 elmGetter, 使 elmGetter 支持 shadow DOM 内的搜索, 并将其嵌入到了 spyxx 中, 使用 getElmGetter 便可以获取内置的魔改 elmGetter
+>
+>注意: 我这里只对 elmGetter 的 css mode 增加了 shadow DOM 搜索支持, 其他模式我也不常用, 所以没修改.
+>
+>同时, 我这里魔改 elmGetter 版本是玉米版的, 我用 TS 重构了 elmGetter
+>
+>elmGetter spyxx.fork.ver 源码: https://github.com/HHsomeHand/monkey-spyxx-lib/blob/main/src/utils/elmGetter.ts
+>
+>相关接口定义请查看: https://github.com/HHsomeHand/monkey-spyxx-lib/tree/main/src/types
 
 ## 尾声2 spyXX
 
