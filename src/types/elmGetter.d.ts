@@ -125,7 +125,7 @@ export interface IElmGetter {
     selector(desc: any): ModeType;
 }
 
-export type CSSElmGetterType = IElmGetter & {
+export type CSSElmGetterType = Omit<IElmGetter, 'get' | 'each'> & {
     get(selector: string, options?: IGetOptions): Promise<Element>;
     get(selectors: string[], options?: IGetOptions): Promise<Element[]>;
 
@@ -136,7 +136,7 @@ export type CSSElmGetterType = IElmGetter & {
     ): void;
 }
 
-export type JQueryElmGetterType = IElmGetter & {
+export type JQueryElmGetterType = Omit<IElmGetter, 'get' | 'each'> & {
     get(selector: string, options?: IGetOptions): Promise<JQuery>;
     get(selectors: string[], options?: IGetOptions): Promise<JQuery[]>;
 
@@ -147,7 +147,7 @@ export type JQueryElmGetterType = IElmGetter & {
     ): void;
 }
 
-export type XpathElmGetterType = IElmGetter & {
+export type XpathElmGetterType = Omit<IElmGetter, 'get' | 'each'> & {
     get(selector: string, options?: IGetOptions): Promise<Node>;
     get(selectors: string[], options?: IGetOptions): Promise<Node[]>;
 
