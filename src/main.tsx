@@ -89,6 +89,12 @@ if (import.meta.env.MODE === "development") {
     // 仅在开发环境运行的代码
     console.log(cornDebugModeHint);
 
+    async function main() {
+        testAdBlockStep();
+    }
+
+    main();
+
     async function testSelectToLog(): Promise<string> {
         let selector = await window.spyXX.getSelector();
 
@@ -206,9 +212,7 @@ if (import.meta.env.MODE === "development") {
                         showToast("用户取消了选择");
                         l_isEnd = true;
                     }
-
-                    break;
-                }
+                } break;
                 case 1: {
                     let targetSelector = await window.spyXX.getParent(l_selector, {
                         excludeSelectors: ["body"],
@@ -229,17 +233,22 @@ if (import.meta.env.MODE === "development") {
                         break;
                     }
 
-                    let resultEl = document.querySelector(targetSelector);
+                    async function main() {
+                        const elmGetter = window.spyXX.getElmGetter();
 
-                    if (!resultEl) {
-                        console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
-                        break;
+                        let resultEl = await elmGetter.get(targetSelector);
+
+                        if (!resultEl) {
+                            console.log("选择器错误, 可能是 spyXX bug, 请联系 qq2402398917 反馈错误, 谢谢")
+                        }
+
+                        resultEl.remove();
                     }
 
-                    resultEl.remove();
+                    main()
 
                     l_isEnd = true;
-                }
+                } break;
             }
 
             if (l_isEnd) {
